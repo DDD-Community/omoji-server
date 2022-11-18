@@ -13,6 +13,8 @@
 Ex. [INIT] Setting new module
 
 ## Branch convention
-> feat/기능명
+|Branch name|
+|:--|
+|feat/기능명|
 
 Ex. feat/auth
