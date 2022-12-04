@@ -4,9 +4,9 @@ application:
   title: omoji
 
 spring:
-  profiles:
-    active: local
-    include: connection #oauth2, jwt 나중에 추가
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   sql:
     init:
       platform: postgres
@@ -25,7 +25,9 @@ spring:
 
 --- #local 환경
 spring:
-  profiles: local
+  config:
+    activate:
+      on-profile: local
   jpa.hibernate.ddl-auto: create-drop
 logging:
   level:
@@ -35,14 +37,18 @@ logging:
 
 --- #dev 환경
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
 logging:
   level:
     root: info
 
 --- #prod 환경
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
 server:
   port: 9090
 logging:
