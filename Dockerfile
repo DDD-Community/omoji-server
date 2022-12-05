@@ -11,8 +11,9 @@ RUN ./gradlew build --exclude-task test
 RUN ["ls","-al"]
 RUN ["ls","build/libs"]
 
-ARG JAR_FILE=build/libs/*.jar
+ARG JAR_FILE=./build/libs/*.jar
 COPY ${JAR_FILE} app.jar
 
+
 EXPOSE 9090
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod" ,"app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod" ,"/app.jar"]
