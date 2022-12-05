@@ -8,8 +8,8 @@ COPY src src
 RUN chmod +x ./gradlew
 RUN ./gradlew build --exclude-task test
 
-CMD ["ls","-al"]
-CMD ["ls","build/libs"]
+RUN ["ls","-al"]
+RUN ["ls","build/libs"]
 
 EXPOSE 9090
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod" ,"app.jar"]
