@@ -5,8 +5,8 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 COPY src src
-CMD ["chmod", "+x", "./gradlew"]
-CMD ["./gradlew", "build", "--exclude-task", "test"]
+RUN chmod +x ./gradlew
+RUN ./gradlew build --exclude-task test
 
 COPY build/libs/target/*.jar app.jar
 
