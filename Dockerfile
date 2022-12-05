@@ -12,6 +12,7 @@ RUN ["ls","-al"]
 RUN ["ls","build/libs"]
 
 RUN cp ./build/libs/*.jar ./app.jar
+RUN ["ls","-al"]
 
 EXPOSE 9090
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod" ,"app.jar"]
