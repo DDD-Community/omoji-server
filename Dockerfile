@@ -8,7 +8,8 @@ COPY src src
 RUN chmod +x ./gradlew
 RUN ./gradlew build --exclude-task test
 
-COPY build/libs/target/*.jar app.jar
+FROM openjdk:8-jdk-alpine
+COPY --from=builder build/libs/*.jar app.jar
 
 EXPOSE 9090
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod" ,"app.jar"]
