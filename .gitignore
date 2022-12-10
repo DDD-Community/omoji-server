@@ -28,7 +28,7 @@ out/
 src/main/**/application-oauth.yml
 src/main/**/application-dev.yml
 src/main/**/application-local.yml
-src/main/**/gcp-service-account.json
+src/main/**/omoji-server-account.json
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

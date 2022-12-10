@@ -1,4 +1,4 @@
-package almond_chocoball.omoji.app.core.swagger;
+package almond_chocoball.omoji.app.common.controller;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

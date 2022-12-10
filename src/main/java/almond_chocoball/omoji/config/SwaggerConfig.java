@@ -1,4 +1,4 @@
-package almond_chocoball.omoji.app.core.swagger;
+package almond_chocoball.omoji.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

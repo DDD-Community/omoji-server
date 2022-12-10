@@ -33,16 +33,6 @@ logging:
   level:
     root: debug
     org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql: trace
-
---- #dev 환경
-spring:
-  config:
-    activate:
-      on-profile: dev
-logging:
-  level:
-    root: info
 
 --- #prod 환경
 spring:
