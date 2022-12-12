@@ -15,7 +15,7 @@ spring:
         location: classpath:omoji-server-account.json
   gcp:
     config:
-      file: classpath:omoji-server-account.json
+      file: omoji-server-account.json
     project:
       id: omoji-server
     bucket:
