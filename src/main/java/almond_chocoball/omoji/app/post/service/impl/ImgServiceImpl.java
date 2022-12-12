@@ -1,17 +1,19 @@
 package almond_chocoball.omoji.app.post.service.impl;
 
-import almond_chocoball.omoji.app.post.dto.response.ImgDto;
+import almond_chocoball.omoji.app.post.dto.response.ImgResponseDto;
 import almond_chocoball.omoji.app.post.entity.Img;
 import almond_chocoball.omoji.app.post.repository.ImgRepository;
 import almond_chocoball.omoji.app.post.service.ImgService;
 import almond_chocoball.omoji.app.post.util.GcpBucketUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -28,9 +30,9 @@ public class ImgServiceImpl implements ImgService {
         }
         //파일 업로드
         try {
-            ImgDto imgDto = gcpBucketUtil.uploadFile(imgFile, originalName);
-            if (imgDto != null) {
-                img.updateImg(originalName, imgDto.getName(), imgDto.getUrl());
+            ImgResponseDto imgResponseDto = gcpBucketUtil.uploadFile(imgFile, originalName);
+            if (imgResponseDto != null) {
+                img.updateImg(originalName, imgResponseDto.getName(), imgResponseDto.getUrl());
                 imgRepository.save(img);
             }
         } catch (Exception e) {

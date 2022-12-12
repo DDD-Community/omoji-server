@@ -1,11 +1,11 @@
 package almond_chocoball.omoji.app.post.util;
 
-import almond_chocoball.omoji.app.post.dto.response.ImgDto;
+import almond_chocoball.omoji.app.post.dto.response.ImgResponseDto;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
-import org.apache.commons.io.FileUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -17,13 +17,13 @@ import com.google.cloud.storage.StorageOptions;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class GcpBucketUtil {
 
     @Value("${gcp.config.file}")
@@ -35,7 +35,7 @@ public class GcpBucketUtil {
     @Value("${gcp.dir.name}")
     private String gcpDirectoryName;
 
-    public ImgDto uploadFile(MultipartFile file, String originalName) throws Exception, IOException {
+    public ImgResponseDto uploadFile(MultipartFile file, String originalName) throws Exception {
         //byte[] fileData = FileUtils.readFileToByteArray(convertFile(file));
         byte[] fileData = file.getBytes();
         InputStream ios = new ClassPathResource(gcpConfigFile).getInputStream();
@@ -56,7 +56,7 @@ public class GcpBucketUtil {
         Blob blob = bucket.create(gcpDirectoryName + "/" + savedFileName, fileData, contentType);
 
         if(blob != null){
-            return new ImgDto(blob.getName(), blob.getMediaLink());
+            return new ImgResponseDto(blob.getName(), blob.getMediaLink());
         }
 
         return null;

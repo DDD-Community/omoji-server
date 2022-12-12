@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class DetailPost {
+public class DetailPostResponseDto {
 
     @NotNull
     private Long id;
@@ -27,8 +27,8 @@ public class DetailPost {
     @NotNull
     private int dislikeCount;
 
-    public static DetailPost of(Post post) { //Entity->Dto
-        DetailPost detailPost = CustomObjectMapper.to(post, DetailPost.class);
-        return detailPost;
+    public static DetailPostResponseDto of(Post post) { //Entity->Dto
+        DetailPostResponseDto detailPostResponseDto = CustomObjectMapper.to(post, DetailPostResponseDto.class);
+        return detailPostResponseDto;
     }
 }

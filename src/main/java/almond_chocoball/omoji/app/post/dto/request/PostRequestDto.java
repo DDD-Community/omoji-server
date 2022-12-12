@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostDto {
+public class PostRequestDto {
 
     private Long id;
 

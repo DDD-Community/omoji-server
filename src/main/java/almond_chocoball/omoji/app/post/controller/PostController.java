@@ -1,7 +1,7 @@
 package almond_chocoball.omoji.app.post.controller;
 
 import almond_chocoball.omoji.app.common.dto.ApiResponse;
-import almond_chocoball.omoji.app.post.dto.request.PostDto;
+import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
 import almond_chocoball.omoji.app.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -23,9 +23,9 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) //img까지 첨부 - formData의 경우 @RequsetBody적지 말고, Dto에 반드시 Setter열어놔야함
-    public ResponseEntity<Long> uploadPost(@Valid PostDto postDto,
+    public ResponseEntity<Long> uploadPost(@Valid PostRequestDto postRequestDto,
                                         @RequestParam("imgs") List<MultipartFile> imgFileList) throws Exception {
-        return ApiResponse.created(postService.uploadPost(postDto, imgFileList));
+        return ApiResponse.created(postService.uploadPost(postRequestDto, imgFileList));
     }
 
 }
