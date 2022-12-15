@@ -2,6 +2,7 @@ package almond_chocoball.omoji.app.post.service.impl;
 
 import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
 import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
+import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.post.entity.Img;
 import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.PostRepository;
@@ -24,7 +25,7 @@ public class PostServiceImpl implements PostService {
     private final ImgService imgService;
 
     @Override
-    public Long uploadPost(PostRequestDto postRequestDto, List<MultipartFile> imgFileList) throws Exception {
+    public SimpleSuccessResponse uploadPost(PostRequestDto postRequestDto, List<MultipartFile> imgFileList) throws Exception {
         if (imgFileList.get(0).isEmpty()){
             throw new RuntimeException("최소 1 장의 사진을 첨부해야 합니다.");
         }
@@ -37,7 +38,8 @@ public class PostServiceImpl implements PostService {
         Long id = postRepository.save(post).getId(); //post등록
         uploadImgs(post, imgFileList); //img등록
 
-        return id;
+        SimpleSuccessResponse simpleSuccessResponse = new SimpleSuccessResponse(id);
+        return simpleSuccessResponse;
     }
 
     @Override
