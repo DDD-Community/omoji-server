@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ImgDto {
+public class ImgResponseDto {
     private String name;
     private String url;
 }

@@ -1,6 +1,5 @@
 package almond_chocoball.omoji.app.post.service;
 
-import almond_chocoball.omoji.app.post.dto.response.ImgDto;
 import almond_chocoball.omoji.app.post.entity.Img;
 import org.springframework.web.multipart.MultipartFile;
 
