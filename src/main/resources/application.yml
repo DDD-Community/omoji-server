@@ -16,12 +16,12 @@ spring:
     hibernate:
       default_batch_fetch_size: 100
       dialect: org.hibernate.dialect.PostgreSQLDialect
-    #generate-ddl: false  --얘네 쓰면 뭐가 좋은지 다음 생에 찾아보자.
-    #show-sql: true
-    #properties:
-    #  hibernate:
-    #    enable_lazy_load_no_trans: true
-    #    format_sql: true
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        format_sql: true
 
 --- #local 환경
 spring:
@@ -33,6 +33,16 @@ logging:
   level:
     root: debug
     org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql: trace
+
+--- #dev 환경
+spring:
+  config:
+    activate:
+      on-profile: dev
+logging:
+  level:
+    root: info
 
 --- #prod 환경
 spring:
