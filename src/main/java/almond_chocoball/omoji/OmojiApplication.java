@@ -28,7 +28,8 @@ public class OmojiApplication {
 			File file = new File(gcpJson.setPathToResource().toString());
 			try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
 				bw.write(gcpData);
-				System.out.println("Create GCP Cloud credential file");
+				System.out.println("Create GCP Cloud credential file\n"+gcpJson.setPathToResource().toString());
+				System.out.println(gcpData);
 			} catch (IOException e) {
 				System.out.println("Failed create GCP cloud credential file");
 				e.printStackTrace();
