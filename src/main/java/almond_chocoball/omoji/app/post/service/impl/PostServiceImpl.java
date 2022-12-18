@@ -3,7 +3,7 @@ package almond_chocoball.omoji.app.post.service.impl;
 import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
 import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
-import almond_chocoball.omoji.app.post.entity.Img;
+import almond_chocoball.omoji.app.img.entity.Img;
 import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.PostRepository;
 import almond_chocoball.omoji.app.post.service.ImgService;
