@@ -5,6 +5,12 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 COPY src src
+
+RUN echo $GCP_ACCOUNT
+RUN echo $GCP_ACCOUNT > ./src/main/resources/omoji-server-account.json
+RUN ["ls","src/main/resources"]
+RUN cat ./src/main/resources/omoji-server-account.json
+
 RUN chmod +x ./gradlew
 RUN ./gradlew build --exclude-task test
 

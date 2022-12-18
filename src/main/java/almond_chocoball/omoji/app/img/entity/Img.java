@@ -1,6 +1,7 @@
-package almond_chocoball.omoji.app.post.entity;
+package almond_chocoball.omoji.app.img.entity;
 
 import almond_chocoball.omoji.app.common.entity.BaseTimeEntity;
+import almond_chocoball.omoji.app.post.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
