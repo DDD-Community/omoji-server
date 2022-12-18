@@ -1,4 +1,4 @@
-package almond_chocoball.omoji.app.post.dto.response;
+package almond_chocoball.omoji.app.img.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

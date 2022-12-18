@@ -1,11 +1,11 @@
-package almond_chocoball.omoji.app.post.service.impl;
+package almond_chocoball.omoji.app.img.service.impl;
 
-import almond_chocoball.omoji.app.post.dto.response.ImgResponseDto;
-import almond_chocoball.omoji.app.post.entity.Img;
+import almond_chocoball.omoji.app.img.dto.response.ImgResponseDto;
+import almond_chocoball.omoji.app.img.entity.Img;
 import almond_chocoball.omoji.app.post.entity.Post;
-import almond_chocoball.omoji.app.post.repository.ImgRepository;
-import almond_chocoball.omoji.app.post.service.ImgService;
-import almond_chocoball.omoji.app.post.util.GcpBucketUtil;
+import almond_chocoball.omoji.app.img.repository.ImgRepository;
+import almond_chocoball.omoji.app.img.service.ImgService;
+import almond_chocoball.omoji.app.img.util.GcpBucketUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

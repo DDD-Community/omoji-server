@@ -1,6 +1,6 @@
-package almond_chocoball.omoji.app.post.repository;
+package almond_chocoball.omoji.app.img.repository;
 
-import almond_chocoball.omoji.app.post.entity.Img;
+import almond_chocoball.omoji.app.img.entity.Img;
 import almond_chocoball.omoji.app.post.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

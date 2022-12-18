@@ -6,7 +6,7 @@ import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.img.entity.Img;
 import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.PostRepository;
-import almond_chocoball.omoji.app.post.service.ImgService;
+import almond_chocoball.omoji.app.img.service.ImgService;
 import almond_chocoball.omoji.app.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

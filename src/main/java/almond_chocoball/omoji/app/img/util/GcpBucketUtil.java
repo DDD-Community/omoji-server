@@ -1,7 +1,7 @@
-package almond_chocoball.omoji.app.post.util;
+package almond_chocoball.omoji.app.img.util;
 
-import almond_chocoball.omoji.app.post.dto.response.ImgJpgDto;
-import almond_chocoball.omoji.app.post.dto.response.ImgResponseDto;
+import almond_chocoball.omoji.app.img.dto.response.ImgJpgDto;
+import almond_chocoball.omoji.app.img.dto.response.ImgResponseDto;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Blob;
