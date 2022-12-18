@@ -27,7 +27,6 @@ dependencies {
 	implementation group: 'org.postgresql', name: 'postgresql'
 	implementation 'org.springframework.cloud:spring-cloud-gcp-starter-storage:1.2.8.RELEASE'
 
-	compileOnly 'commons-io:commons-io:2.11.0'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
