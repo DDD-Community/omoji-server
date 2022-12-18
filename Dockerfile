@@ -12,6 +12,7 @@ RUN ./gradlew build --exclude-task test
 RUN ["ls","-al"]
 RUN ["ls","build/libs"]
 RUN ["ls","src/main/resources"]
+RUN ["ls","config"]
 
 RUN cp ./build/libs/*.jar ./app.jar
 RUN ["ls","-al"]
