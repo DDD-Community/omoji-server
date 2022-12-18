@@ -1,9 +1,7 @@
 package almond_chocoball.omoji.app.post.entity;
 
 import almond_chocoball.omoji.app.common.entity.BaseTimeEntity;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 

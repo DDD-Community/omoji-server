@@ -23,6 +23,7 @@ public class Img extends BaseTimeEntity {
     @Column(nullable = false)
     private String originalName; //원본 이미지 파일명
 
+    @Column(length = 500)
     private String url; //이미지 조회 경로
 
     private Boolean represent; //대표 이미지 여부

@@ -1,7 +1,8 @@
 package almond_chocoball.omoji.app.post.service.impl;
 
 import almond_chocoball.omoji.app.post.dto.response.ImgResponseDto;
-import almond_chocoball.omoji.app.img.entity.Img;
+import almond_chocoball.omoji.app.post.entity.Img;
+import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.ImgRepository;
 import almond_chocoball.omoji.app.post.service.ImgService;
 import almond_chocoball.omoji.app.post.util.GcpBucketUtil;
@@ -42,8 +43,8 @@ public class ImgServiceImpl implements ImgService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> getImgUrls(Long postId) {
-        return imgRepository.findUrlByPostIdOrderByIdAsc(postId);
+    public List<String> getImgUrls(Post post) {
+        return imgRepository.findUrlByPostIdOrderByIdAsc(post);
     }
 
 }

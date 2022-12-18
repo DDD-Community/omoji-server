@@ -21,13 +21,15 @@ public class DetailPostResponseDto {
     @NotBlank
     private String title;
 
-    private List<String> imgs;  //img_url만 받아라
 
     @NotNull
     private int likeCount;
 
     @NotNull
     private int dislikeCount;
+
+    private List<String> imgs;  //img_url만 받아라
+
 
     public static DetailPostResponseDto of(Post post) { //Entity->Dto
         DetailPostResponseDto detailPostResponseDto = CustomObjectMapper.to(post, DetailPostResponseDto.class);

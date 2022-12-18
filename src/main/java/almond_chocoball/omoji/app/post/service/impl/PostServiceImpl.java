@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -49,7 +50,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
 
         DetailPostResponseDto detailPostResponseDto = DetailPostResponseDto.of(post);
-        List<String> imgUrls = imgService.getImgUrls(id);
+        List<String> imgUrls = imgService.getImgUrls(post);
 
         detailPostResponseDto.setImgs(imgUrls);
 
@@ -58,6 +59,11 @@ public class PostServiceImpl implements PostService {
 
 
     private void uploadImgs(Post post, List<MultipartFile> imgFileList) throws Exception {
+        for (MultipartFile multipartFile : imgFileList) {
+            if (!Objects.requireNonNull(multipartFile.getContentType()).contains("image")) {
+                throw new RuntimeException("이미지 파일만 업로드 가능합니다.");
+            }
+        }
         for(int i=0;i<imgFileList.size();i++){
             Img img = new Img();
             img.setPost(post);
