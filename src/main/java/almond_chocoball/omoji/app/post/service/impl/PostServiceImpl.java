@@ -49,7 +49,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
 
         DetailPostResponseDto detailPostResponseDto = DetailPostResponseDto.of(post);
-        List<String> imgUrls = imgService.getImgUrls(id);
+        List<String> imgUrls = imgService.getImgUrls(post);
 
         detailPostResponseDto.setImgs(imgUrls);
 
