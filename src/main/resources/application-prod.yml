@@ -9,3 +9,16 @@ spring:
     user:
       name: ${SECURITY_ID}
       password: ${SECURITY_PW}
+  cloud:
+    gcp:
+      credentials:
+        location: classpath:omoji-server-account.json
+gcp:
+  config:
+    file: omoji-server-account.json
+  project:
+    id: omoji-server
+  bucket:
+    id: omoji-bucket
+  dir:
+    name: img
