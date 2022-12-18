@@ -28,7 +28,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DetailPostResponseDto> getItem(@PathVariable("id") Long id) {
+    public ResponseEntity<DetailPostResponseDto> getPost(@PathVariable("id") Long id) {
         return ApiResponse.success(postService.getPost(id));
     }
 

@@ -4,11 +4,16 @@ import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
 import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.img.entity.Img;
+import almond_chocoball.omoji.app.post.dto.response.PostPagingResponseDto;
+import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
 import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.PostRepository;
 import almond_chocoball.omoji.app.img.service.ImgService;
 import almond_chocoball.omoji.app.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -77,4 +83,33 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public PostsResponseDto<List<PostPagingResponseDto>> getPostsWithPaging(int page, int size) {
+        Sort sort = sortByCreatedAt();
+        Page<Post> allPosts = postRepository.findAll(PageRequest.of(page, size, sort));
+        List<PostPagingResponseDto> pagingResponseDtoList = allPosts.getContent().stream().map(post -> {
+            PostPagingResponseDto pagingResponseDto = PostPagingResponseDto.of(post);
+            pagingResponseDto.setImgs(imgService.getImgUrls(post));
+            return pagingResponseDto;
+        }).collect(Collectors.toList());
+        return new PostsResponseDto(pagingResponseDtoList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PostsResponseDto<List<DetailPostResponseDto>> getMyPostsWithPaging(int page, int size) {
+        Sort sort = sortByCreatedAt();
+        Page<Post> allPosts = postRepository.findAll(PageRequest.of(page, size, sort));
+        List<DetailPostResponseDto> detailPostResponseDtoList = allPosts.getContent().stream().map(post -> {
+            DetailPostResponseDto detailPostResponseDto = DetailPostResponseDto.of(post);
+            detailPostResponseDto.setImgs(imgService.getImgUrls(post));
+            return detailPostResponseDto;
+        }).collect(Collectors.toList());
+        return new PostsResponseDto(detailPostResponseDtoList);
+    }
+
+    private Sort sortByCreatedAt() {
+        return Sort.by(Sort.Direction.DESC, "createdAt");
+    }
 }
