@@ -12,10 +12,10 @@ spring:
   cloud:
     gcp:
       credentials:
-        location: classpath:omoji-server-account.json
+        location: file:${user.home}/config/omoji-server-account.json
 gcp:
   config:
-    file: omoji-server-account.json
+    file: ${user.home}/config/omoji-server-account.json
   project:
     id: omoji-server
   bucket:
