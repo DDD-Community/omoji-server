@@ -9,6 +9,7 @@ import com.google.cloud.storage.Bucket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.PathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,7 +48,8 @@ public class GcpBucketUtil {
 
     @PostConstruct
     protected void init() throws IOException {
-        ios = new ClassPathResource(gcpConfigFile).getInputStream();
+        ios = new PathResource(gcpConfigFile).getInputStream();
+        //ios = new ClassPathResource(gcpConfigFile).getInputStream();
 
         options = StorageOptions.newBuilder().setProjectId(gcpProjectId)
                 .setCredentials(GoogleCredentials.fromStream(ios)).build();
