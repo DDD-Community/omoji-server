@@ -40,6 +40,8 @@ public class GcpBucketUtil {
     private String gcpBucketId;
     @Value("${gcp.dir.name}")
     private String gcpDirectoryName;
+    @Value("${spring.profiles.active:}")
+    private String activeProfile;
 
     private InputStream ios;
     private StorageOptions options;
@@ -48,9 +50,13 @@ public class GcpBucketUtil {
 
     @PostConstruct
     protected void init() throws IOException {
-        ios = new PathResource(gcpConfigFile).getInputStream();
-        //ios = new ClassPathResource(gcpConfigFile).getInputStream();
 
+        if(activeProfile.equals("prod")){
+            ios = new PathResource(gcpConfigFile).getInputStream();
+        }
+        else{
+            ios = new ClassPathResource(gcpConfigFile).getInputStream();
+        }
         options = StorageOptions.newBuilder().setProjectId(gcpProjectId)
                 .setCredentials(GoogleCredentials.fromStream(ios)).build();
 
