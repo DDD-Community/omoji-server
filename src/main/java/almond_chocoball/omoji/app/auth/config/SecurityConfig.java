@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity webSecurity) throws Exception{ //스프링 시큐리티(httpSecurity인증,인가) 적용 전
         webSecurity.ignoring().antMatchers("/favicon.ico", "/docs/**", "/configuration/**",
-                "/webjars/**", "/swagger-ui/**","/swagger**");
+                "/webjars/**", "/swagger-ui/**","/swagger**","/v3/api-docs");
 
     }
 
@@ -43,17 +43,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .frameOptions().sameOrigin() // 동일 도메인에서는 iframe 접근 가능하도록 X-Frame-Options을 smaeOrigin()으로 설정
                 .and().cors().and()
                 .httpBasic().disable()
-                .csrf().disable() //session안 쓸 것
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 관리x
+                    .csrf().disable() //session안 쓸 것
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 관리x
                 .and()
-                .authorizeRequests() //아래부터 인증 절차 설정하겠다
-                .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers("/oauth2/**").permitAll()
-                .antMatchers("/api/v1/auth/**").permitAll()
-
-                //.antMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                //.antMatchers(HttpMethod.GET, "/api/v1/item/**").permitAll()
-                .anyRequest().authenticated(); //그외는 인증된 사용자만 접근 가능
+                    .authorizeRequests() //아래부터 인증 절차 설정하겠다
+                    .antMatchers(HttpMethod.OPTIONS).permitAll()
+                    .antMatchers("/oauth2/**").permitAll()
+                    .antMatchers("/api/v1/auth/**").permitAll()
+                    .antMatchers("/api/v1/posts/**").permitAll()
+                    //.antMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                    .anyRequest().authenticated(); //그외는 인증된 사용자만 접근 가능
 
         http
                 .oauth2Login()
