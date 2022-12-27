@@ -33,7 +33,6 @@ public class CustomOAuth2Service implements OAuth2UserService<OAuth2UserRequest,
 
         //서비스 구분을 위한 작업 (구글: qoogle, 네이버: naver)
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        log.info("[loadUser] registrationId = {}", registrationId);
         Social social = Social.valueOf(registrationId);
 
         //provider가 제공할 user정보 속성키 가져옴
