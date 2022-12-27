@@ -45,8 +45,7 @@ public class PostServiceImpl implements PostService {
         Long id = postRepository.save(post).getId(); //post등록
         uploadImgs(post, imgFileList); //img등록
 
-        SimpleSuccessResponse simpleSuccessResponse = new SimpleSuccessResponse(id);
-        return simpleSuccessResponse;
+        return new SimpleSuccessResponse(id);
     }
 
     @Override

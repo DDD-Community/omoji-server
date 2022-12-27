@@ -1,22 +1,17 @@
 package almond_chocoball.omoji;
 
-import almond_chocoball.omoji.initialize.CreateJSON;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import javax.annotation.PostConstruct;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableWebSecurity
 public class OmojiApplication {
 	@Value("${GCP_ACCOUNT:default}")
 	private String gcpData;
