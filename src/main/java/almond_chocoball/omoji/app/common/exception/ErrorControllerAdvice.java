@@ -2,6 +2,7 @@ package almond_chocoball.omoji.app.common.exception;
 
 import almond_chocoball.omoji.app.common.dto.ApiResponse;
 import almond_chocoball.omoji.app.common.dto.ErrorResponse;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -32,10 +33,10 @@ public class ErrorControllerAdvice {
         return ApiResponse.badRequest(new ErrorResponse(msg));
     }
 
-//    @ExceptionHandler(value = JwtException.class)
-//    public ResponseEntity<ErrorResponse> handleJwtException(JwtException e) {
-//        return ApiResponse.unAuthorized(new ErrorResponse(e.getMessage()));
-//    }
+    @ExceptionHandler(value = JwtException.class)
+    public ResponseEntity<ErrorResponse> handleJwtException(JwtException e) {
+        return ApiResponse.unAuthorized(new ErrorResponse(e.getMessage()));
+    }
 
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(RuntimeException e) {
