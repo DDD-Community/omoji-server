@@ -32,7 +32,7 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
 logging:
   level:
-    root: debug
+    root: info
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace
 
@@ -50,6 +50,7 @@ spring:
   config:
     activate:
       on-profile: prod
+    import: application-oauth.yml
 server:
   port: 9090
 logging:

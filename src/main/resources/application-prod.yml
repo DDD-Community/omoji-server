@@ -5,10 +5,6 @@ spring:
     url: ${DB_HOST}
     username: ${DB_USER}
     password: ${DB_PASSWD}
-  security:
-    user:
-      name: ${SECURITY_ID}
-      password: ${SECURITY_PW}
   cloud:
     gcp:
       credentials:
