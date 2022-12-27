@@ -2,19 +2,17 @@ package almond_chocoball.omoji.app.img.util;
 
 import almond_chocoball.omoji.app.img.dto.response.ImgJpgDto;
 import almond_chocoball.omoji.app.img.dto.response.ImgResponseDto;
-
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.PathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
@@ -26,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Component
@@ -70,11 +69,12 @@ public class GcpBucketUtil {
         StringBuilder savedFileName = new StringBuilder(fileName + "-" + uuid);
 
         ImgJpgDto imgJpgDto = convertToJpg(file, originalName, savedFileName);
-
         Blob blob = bucket.create(gcpDirectoryName + "/" + savedFileName,
                 imgJpgDto.getFileData(), imgJpgDto.getContentType());
 
         if(blob != null){
+            Path path1 = Paths.get(savedFileName.toString());
+            Files.deleteIfExists(path1); //압축 결과 파일 삭제
             return new ImgResponseDto(blob.getName(), blob.getMediaLink());
         }
 
@@ -107,9 +107,12 @@ public class GcpBucketUtil {
 
             afterImg.createGraphics().drawImage(beforeImg, 0, 0, Color.white, null);
             ImageIO.write(afterImg, "jpg", afterFile);
-
             path = afterFile.toPath();
             contentType = Files.probeContentType(path);
+
+            Path originalPath = Paths.get(file.getOriginalFilename());
+            Files.deleteIfExists(originalPath); //압축을 위해 저장한 원본 파일 삭제
+
             return new ImgJpgDto(Files.readAllBytes(path), contentType);
 
         } else {
