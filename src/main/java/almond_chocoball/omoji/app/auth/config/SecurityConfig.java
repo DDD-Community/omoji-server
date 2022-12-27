@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity webSecurity) throws Exception{ //스프링 시큐리티(httpSecurity인증,인가) 적용 전
         webSecurity.ignoring().antMatchers("/favicon.ico", "/docs/**", "/configuration/**",
-                "/webjars/**", "/swagger-ui/**","/swagger**","/v3/api-docs");
+                "/webjars/**","/webjars/springfox-swagger-ui/*.{js,css}","/swagger-resources/configuration/**","/swagger-ui/**","/swagger**","/v3/api-docs");
 
     }
 
