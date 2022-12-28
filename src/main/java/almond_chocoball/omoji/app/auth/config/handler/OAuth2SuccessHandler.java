@@ -2,7 +2,6 @@ package almond_chocoball.omoji.app.auth.config.handler;
 
 import almond_chocoball.omoji.app.auth.config.jwt.JwtTokenProvider;
 import almond_chocoball.omoji.app.auth.dto.Token;
-import almond_chocoball.omoji.app.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -36,7 +35,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setContentType("application/json;charset=UTF-8");
 
         var writer = response.getWriter();
-        writer.println(objectMapper.writeValueAsString(ApiResponse.success(token)));
+        writer.println(objectMapper.writeValueAsString(token));
         writer.flush();
     }
 }

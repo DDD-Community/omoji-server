@@ -1,10 +1,7 @@
 package almond_chocoball.omoji.app.auth.config.filter;
 
-import almond_chocoball.omoji.app.common.dto.ApiResponse;
 import almond_chocoball.omoji.app.common.dto.ErrorResponse;
-import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,14 +21,12 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
             filterChain.doFilter(request,response);
-        } catch (JwtException e){
-            setExceptionResponse(response, ApiResponse.unAuthorized(new ErrorResponse(e.getMessage())));
-        }catch (Exception e){
-            setExceptionResponse(response, ApiResponse.internalServerError(new ErrorResponse(e.getMessage())));
+        } catch (Exception e){
+            setExceptionResponse(response, new ErrorResponse(e.getMessage()));
         }
     }
 
-    private void setExceptionResponse(HttpServletResponse response, ResponseEntity<ErrorResponse> apiResponse) throws IOException {
+    private void setExceptionResponse(HttpServletResponse response, ErrorResponse apiResponse) throws IOException {
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
