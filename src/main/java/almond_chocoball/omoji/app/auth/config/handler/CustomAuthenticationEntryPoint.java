@@ -1,8 +1,6 @@
 package almond_chocoball.omoji.app.auth.config.handler;
 
-import almond_chocoball.omoji.app.common.dto.ApiResponse;
 import almond_chocoball.omoji.app.common.dto.ErrorResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -21,7 +19,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          AuthenticationException e) throws IOException {
 
 
-        ResponseEntity<ErrorResponse> apiResponse= ApiResponse.unAuthorized(new ErrorResponse(e.getMessage()));
+        ErrorResponse apiResponse= new ErrorResponse(e.getMessage());
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");

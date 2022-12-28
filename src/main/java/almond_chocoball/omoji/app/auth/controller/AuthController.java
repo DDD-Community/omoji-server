@@ -8,25 +8,26 @@ import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.web.servlet.headers.HeadersSecurityMarker;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Tag(name = "OAuth", description = "로그아웃, 토큰 갱신")
 public class AuthController {
 
     private final AuthService authService;
 
     @Tag(name = "OAuth")
     @Operation(summary = "accessToken 갱신", description = "Header에 Access, Refresh 첨부")
-    @HeadersSecurityMarker
     @PostMapping("/refresh")
     public ResponseEntity<Token> refreshToken(HttpServletRequest request) {
         final RefreshRequest refreshHeader = refreshHeader(request);

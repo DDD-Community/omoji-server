@@ -8,6 +8,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,12 +26,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class JwtTokenProvider {
 
     private final MemberRepository memberRepository;
+    private final JwtValidation jwtValidation;
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -84,7 +87,7 @@ public class JwtTokenProvider {
 
     //AccessToken 검사 정보로 Authentication 객체 생성
     public Authentication getAuthentication(String accessToken) { //filter에서 인증 성공 시 SecurityContext에 저장할 Authentication 생성
-        Claims claims = JwtValidation.parseClaims(accessToken);
+        Claims claims = jwtValidation.parseClaims(accessToken);
 
         if (claims.get("role") == null) { throw new JwtException("AccessToken Parse Failed"); } //access대신 refresh 넣었을 때 대비
 

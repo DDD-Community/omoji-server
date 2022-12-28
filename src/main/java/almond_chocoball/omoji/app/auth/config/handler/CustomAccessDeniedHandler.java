@@ -1,8 +1,6 @@
 package almond_chocoball.omoji.app.auth.config.handler;
 
-import almond_chocoball.omoji.app.common.dto.ApiResponse;
 import almond_chocoball.omoji.app.common.dto.ErrorResponse;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
@@ -22,7 +20,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler { //권한
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException e) throws IOException, ServletException {
 
-        ResponseEntity<ErrorResponse> apiResponse= ApiResponse.forbidden(new ErrorResponse(e.getMessage()));
+        ErrorResponse apiResponse= new ErrorResponse(e.getMessage());
 
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json;charset=UTF-8");

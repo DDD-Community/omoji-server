@@ -20,9 +20,9 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        enable_lazy_load_no_trans: true
         format_sql: true
-
+server:
+  forward-headers-strategy: framework
 --- #local 환경
 spring:
   config:
@@ -32,7 +32,7 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
 logging:
   level:
-    root: info
+    root: debug
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace
 
