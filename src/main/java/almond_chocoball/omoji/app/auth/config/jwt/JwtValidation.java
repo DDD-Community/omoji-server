@@ -12,6 +12,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtValidation {
 
+    @Value("${jwt.secret}")
     private static String secretKey;
 
     public static boolean validateToken(String token) { //받은 토큰으로 클레임의 유효기간 체크, 유효 시 true 리턴
@@ -45,7 +46,7 @@ public class JwtValidation {
     }
 
     @Value("${jwt.secret}") //static변수에는 Component->setter로 주입
-    public static void setSecretKey(String secretKey) {
+    public void setSecretKey(String secretKey) {
         JwtValidation.secretKey = secretKey;
     }
 }
