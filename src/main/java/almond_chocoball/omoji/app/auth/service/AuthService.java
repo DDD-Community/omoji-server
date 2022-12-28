@@ -71,7 +71,7 @@ public class AuthService {
 //        redisTemplate.opsForValue() //JWT Expiration될 때까지 Redis에 저장 -> accessToken만료
 //                .set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
         memberRepository.updateRefreshToken(socialId, null); //refreshToken 비움
-        return new SimpleSuccessResponse(getMemberId(socialId));
+        return new SimpleSuccessResponse(null);
     }
 
     public Long getMemberId(String socialId) {
