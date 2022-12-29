@@ -1,6 +1,7 @@
 package almond_chocoball.omoji.app.evaluate.entity;
 
 import almond_chocoball.omoji.app.common.entity.BaseTimeEntity;
+import almond_chocoball.omoji.app.evaluate.enums.EvaluateEnum;
 import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.post.entity.Post;
 import lombok.Getter;
@@ -14,20 +15,14 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EvaluateEntity extends BaseTimeEntity {
+public class Evaluate extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private Long likeCount;
-
-    @Column(nullable = false)
-    private Long dislikeCount;
-
-    @Column(nullable = false)
-    private Long passCount;
+    private EvaluateEnum evaluateEnum;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false)
@@ -37,9 +32,8 @@ public class EvaluateEntity extends BaseTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public void updateEvaluate(Long likeCount, Long dislikeCount, Long passCount){
-        this.likeCount = likeCount;
-        this.dislikeCount = dislikeCount;
-        this.passCount = passCount;
+    public void updateEvaluate(Post post, Member member){
+        this.post = post;
+        this.member = member;
     }
 }
