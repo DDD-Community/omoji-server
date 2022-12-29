@@ -21,21 +21,15 @@ public class EvaluateController {
     @PostMapping()
     @Tag(name = "Evaluate post")
     @Operation(summary = "평가하기", description = "Post ID를 입력받고 좋아요(LIKE), 싫어요(DISLIKE), 넘어가기(PASS)를 선택항 값 증가")
-    public ResponseEntity<EvaluateResponseDto> increaseLike(EvaluateRequestDto evaluateRequestDto) {
-        return ApiResponse.success(evaluateService.setEvaluate(
-                evaluateRequestDto.getPostId(),
-                evaluateRequestDto.getEvaluateEnum(),
-                1L));
+    public ResponseEntity<EvaluateResponseDto> postEvaluate(@RequestBody EvaluateRequestDto evaluateRequestDto) {
+        return ApiResponse.success(evaluateService.insertEvaluate(evaluateRequestDto));
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{id}")
     @Tag(name = "Evaluate post")
     @Operation(summary = "평가 제거하기", description = "Post ID를 입력받고 좋아요(LIKE), 싫어요(DISLIKE), 넘어가기(PASS)를 선택하여 값 감소")
-    public ResponseEntity<EvaluateResponseDto> increaseDislike(EvaluateRequestDto evaluateRequestDto){
-        return ApiResponse.success(evaluateService.setEvaluate(
-                evaluateRequestDto.getPostId(),
-                evaluateRequestDto.getEvaluateEnum(),
-                -1L));
+    public ResponseEntity deleteEvaluate(@PathVariable("id") Long id){
+        return evaluateService.removeEvaluate(id);
     }
 
 }
