@@ -5,13 +5,11 @@ import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.img.entity.Img;
 import almond_chocoball.omoji.app.post.dto.response.PostPagingResponseDto;
-import almond_chocoball.omoji.app.post.dto.response.PostReactionResponseDto;
 import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
 import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.PostRepository;
 import almond_chocoball.omoji.app.img.service.ImgService;
 import almond_chocoball.omoji.app.post.service.PostService;
-import com.sun.tools.jconsole.JConsoleContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,38 +60,6 @@ public class PostServiceImpl implements PostService {
         detailPostResponseDto.setImgs(imgUrls);
 
         return detailPostResponseDto;
-    }
-
-    @Override
-    public PostReactionResponseDto setReaction(Long id, Boolean isLike, Boolean isIncrease) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
-
-        Long disLikeCount = post.getDislikeCount();
-        Long likeCount = post.getLikeCount();
-        if(isIncrease){
-            if(isLike){
-                post.setLikeCount(likeCount+1);
-            }
-            else{
-                post.setDislikeCount(disLikeCount+1);
-            }
-        }
-        else{
-            if(isLike){
-                post.setLikeCount(likeCount-1);
-            }
-            else{
-                post.setDislikeCount(disLikeCount-1);
-            }
-        }
-        Post resultPost = postRepository.save(post);
-
-        return new PostReactionResponseDto(
-                resultPost.getId(),
-                resultPost.getLikeCount(),
-                resultPost.getDislikeCount()
-        );
     }
 
 
