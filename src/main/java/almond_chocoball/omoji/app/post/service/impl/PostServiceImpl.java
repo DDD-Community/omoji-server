@@ -117,9 +117,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public PostsResponseDto<List<PostPagingResponseDto>> getPostsWithPaging(int page, int size) {
+    public PostsResponseDto<List<PostPagingResponseDto>> getPostsWithPaging(Member member,
+                                                                            int page, int size) {
         Sort sort = sortByCreatedAt();
-        Page<Post> allPosts = postRepository.findAll(PageRequest.of(page, size, sort));
+        Page<Post> allPosts = postRepository.findAllByMemberNot(member, PageRequest.of(page, size, sort));
         List<PostPagingResponseDto> pagingResponseDtoList = allPosts.getContent().stream().map(post -> {
             PostPagingResponseDto pagingResponseDto = PostPagingResponseDto.of(post);
             pagingResponseDto.setImgs(imgService.getImgUrls(post));

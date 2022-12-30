@@ -53,9 +53,10 @@ public class PostController {
 
     @Tag(name = "Post")
     @GetMapping()
-    @Operation(summary = "start부터 limit까지 post 조회", description = "start부터 limit까지 post 조회하는 API")
-    public ResponseEntity<PostsResponseDto<?>> getPostsWithPaging(PostPagingRequestDto pagingRequestDto) {
-        return ApiResponse.success(postService.getPostsWithPaging(pagingRequestDto.getStart(), pagingRequestDto.getLimit()));
+    @Operation(summary = "내가 쓴 글 빼고 start부터 limit까지 post 조회", description = "start부터 limit까지 post 조회하는 API")
+    public ResponseEntity<PostsResponseDto<?>> getPostsWithPaging(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                  PostPagingRequestDto pagingRequestDto) {
+        return ApiResponse.success(postService.getPostsWithPaging(memberService.findMember(userDetails), pagingRequestDto.getStart(), pagingRequestDto.getLimit()));
     }
 
     @Tag(name = "Post")

@@ -10,4 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAll(Pageable pageable);
     Page<Post> findAllByMember(Member member, Pageable pageable);
+
+    Page<Post> findAllByMemberNot(Member member, Pageable pageable);
 }
