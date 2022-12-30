@@ -20,14 +20,15 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        enable_lazy_load_no_trans: true
         format_sql: true
-
+server:
+  forward-headers-strategy: framework
 --- #local 환경
 spring:
   config:
     activate:
       on-profile: local
+    import: application-oauth.yml
   jpa.hibernate.ddl-auto: create-drop
 logging:
   level:
@@ -49,6 +50,7 @@ spring:
   config:
     activate:
       on-profile: prod
+    import: application-oauth.yml
 server:
   port: 9090
 logging:

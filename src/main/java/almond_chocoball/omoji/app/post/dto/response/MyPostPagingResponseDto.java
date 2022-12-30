@@ -6,22 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetailPostResponseDto {
+public class MyPostPagingResponseDto {
 
     @NotNull
     private Long id;
-
-    @NotBlank
-    private String title;
-
-    private String description;
 
     @NotNull
     private int likeCount;
@@ -29,11 +23,11 @@ public class DetailPostResponseDto {
     @NotNull
     private int dislikeCount;
 
-    private List<String> imgs;  //img_url만 받아라
+    private List<String> imgs;
 
-
-    public static DetailPostResponseDto of(Post post) { //Entity->Dto
-        DetailPostResponseDto detailPostResponseDto = CustomObjectMapper.to(post, DetailPostResponseDto.class);
-        return detailPostResponseDto;
+    public static MyPostPagingResponseDto of(Post post) { //Entity->Dto
+        MyPostPagingResponseDto myPostPagingResponseDto = CustomObjectMapper.to(post, MyPostPagingResponseDto.class);
+        return myPostPagingResponseDto;
     }
 }
+
