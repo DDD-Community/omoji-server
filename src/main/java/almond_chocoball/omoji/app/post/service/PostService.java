@@ -19,7 +19,7 @@ public interface PostService {
 
     PostReactionResponseDto setReaction(Long id, Boolean isLike, Boolean isIncrease);
 
-    PostsResponseDto<List<PostPagingResponseDto>> getPostsWithPaging(int start, int limit);
+    PostsResponseDto<List<PostPagingResponseDto>> getPostsWithPaging(Member member, int start, int limit);
 
     PostsResponseDto<List<DetailPostResponseDto>> getMyPostsWithPaging(Member member, int start, int limit);
 }
