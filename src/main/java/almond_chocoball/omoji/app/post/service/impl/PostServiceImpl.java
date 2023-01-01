@@ -63,38 +63,6 @@ public class PostServiceImpl implements PostService {
         return detailPostResponseDto;
     }
 
-    @Override
-    public PostReactionResponseDto setReaction(Long id, Boolean isLike, Boolean isIncrease) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
-
-        Long disLikeCount = post.getDislikeCount();
-        Long likeCount = post.getLikeCount();
-        if(isIncrease){
-            if(isLike){
-                post.setLikeCount(likeCount+1);
-            }
-            else{
-                post.setDislikeCount(disLikeCount+1);
-            }
-        }
-        else{
-            if(isLike){
-                post.setLikeCount(likeCount-1);
-            }
-            else{
-                post.setDislikeCount(disLikeCount-1);
-            }
-        }
-        Post resultPost = postRepository.save(post);
-
-        return new PostReactionResponseDto(
-                resultPost.getId(),
-                resultPost.getLikeCount(),
-                resultPost.getDislikeCount()
-        );
-    }
-
 
     private void uploadImgs(Post post, List<MultipartFile> imgFileList) throws Exception {
         for (MultipartFile multipartFile : imgFileList) {

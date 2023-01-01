@@ -5,7 +5,6 @@ import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
 import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.post.dto.response.PostPagingResponseDto;
-import almond_chocoball.omoji.app.post.dto.response.PostReactionResponseDto;
 import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,8 +15,6 @@ public interface PostService {
     SimpleSuccessResponse uploadPost(Member member, PostRequestDto postRequestDto, List<MultipartFile> imgFileList) throws Exception;
 
     DetailPostResponseDto getPost(Long id);
-
-    PostReactionResponseDto setReaction(Long id, Boolean isLike, Boolean isIncrease);
 
     PostsResponseDto<List<PostPagingResponseDto>> getPostsWithPaging(Member member, int start, int limit);
 
