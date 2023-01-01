@@ -1,14 +1,13 @@
 package almond_chocoball.omoji.app.post.service.impl;
 
-import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
-import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.img.entity.Img;
-import almond_chocoball.omoji.app.post.dto.response.PostPagingResponseDto;
-import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
+import almond_chocoball.omoji.app.img.service.ImgService;
+import almond_chocoball.omoji.app.member.entity.Member;
+import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
+import almond_chocoball.omoji.app.post.dto.response.*;
 import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.PostRepository;
-import almond_chocoball.omoji.app.img.service.ImgService;
 import almond_chocoball.omoji.app.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,7 +31,8 @@ public class PostServiceImpl implements PostService {
     private final ImgService imgService;
 
     @Override
-    public SimpleSuccessResponse uploadPost(PostRequestDto postRequestDto, List<MultipartFile> imgFileList) throws Exception {
+    public SimpleSuccessResponse uploadPost(Member member, PostRequestDto postRequestDto,
+                                            List<MultipartFile> imgFileList) throws Exception {
         if (imgFileList.get(0).isEmpty()){
             throw new RuntimeException("최소 1 장의 사진을 첨부해야 합니다.");
         }
@@ -41,6 +41,7 @@ public class PostServiceImpl implements PostService {
         }
 
         Post post = postRequestDto.toPost();
+        post.setMember(member);
 
         Long id = postRepository.save(post).getId(); //post등록
         uploadImgs(post, imgFileList); //img등록
@@ -84,9 +85,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public PostsResponseDto<List<PostPagingResponseDto>> getPostsWithPaging(int page, int size) {
+    public PostsResponseDto<List<PostPagingResponseDto>> getPostsWithPaging(Member member,
+                                                                            int page, int size) {
         Sort sort = sortByCreatedAt();
-        Page<Post> allPosts = postRepository.findAll(PageRequest.of(page, size, sort));
+        Page<Post> allPosts = postRepository.findAllByMemberNot(member, PageRequest.of(page, size, sort));
         List<PostPagingResponseDto> pagingResponseDtoList = allPosts.getContent().stream().map(post -> {
             PostPagingResponseDto pagingResponseDto = PostPagingResponseDto.of(post);
             pagingResponseDto.setImgs(imgService.getImgUrls(post));
@@ -97,15 +99,16 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public PostsResponseDto<List<DetailPostResponseDto>> getMyPostsWithPaging(int page, int size) {
+    public PostsResponseDto<List<DetailPostResponseDto>> getMyPostsWithPaging(Member member,
+                                                                              int page, int size) {
         Sort sort = sortByCreatedAt();
-        Page<Post> allPosts = postRepository.findAll(PageRequest.of(page, size, sort));
-        List<DetailPostResponseDto> detailPostResponseDtoList = allPosts.getContent().stream().map(post -> {
-            DetailPostResponseDto detailPostResponseDto = DetailPostResponseDto.of(post);
-            detailPostResponseDto.setImgs(imgService.getImgUrls(post));
-            return detailPostResponseDto;
+        Page<Post> allPosts = postRepository.findAllByMember(member, PageRequest.of(page, size, sort));
+        List<MyPostPagingResponseDto> myPostPagingResponseDtoList = allPosts.getContent().stream().map(post -> {
+            MyPostPagingResponseDto myPostPagingResponseDto = MyPostPagingResponseDto.of(post);
+            myPostPagingResponseDto.setImgs(imgService.getImgUrls(post));
+            return myPostPagingResponseDto;
         }).collect(Collectors.toList());
-        return new PostsResponseDto(detailPostResponseDtoList);
+        return new PostsResponseDto(myPostPagingResponseDtoList);
     }
 
     private Sort sortByCreatedAt() {
