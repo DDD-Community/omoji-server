@@ -21,6 +21,7 @@ public class Evaluate extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EvaluateEnum evaluateEnum;
 

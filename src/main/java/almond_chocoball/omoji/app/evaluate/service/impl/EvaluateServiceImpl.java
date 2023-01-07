@@ -5,21 +5,28 @@ import almond_chocoball.omoji.app.evaluate.dto.response.EvaluateResponseDto;
 import almond_chocoball.omoji.app.evaluate.entity.Evaluate;
 import almond_chocoball.omoji.app.evaluate.repository.EvaluateRepository;
 import almond_chocoball.omoji.app.evaluate.service.EvaluateService;
+import almond_chocoball.omoji.app.member.entity.Member;
+import almond_chocoball.omoji.app.post.entity.Post;
+import almond_chocoball.omoji.app.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class EvaluateServiceImpl implements EvaluateService {
 
     private final EvaluateRepository evaluateRepository;
+    private final PostRepository postRepository;
 
     @Override
-    public EvaluateResponseDto insertEvaluate(EvaluateRequestDto evaluateRequestDto) {
-        Evaluate evaluate = evaluateRequestDto.toEvaluate();
+    public EvaluateResponseDto insertEvaluate(Member member, EvaluateRequestDto evaluateRequestDto) {
+        Post post = postRepository.findById(evaluateRequestDto.getPostId())
+                .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다.");});
+        Evaluate evaluate = evaluateRequestDto.toEvaluate(member, post);
         Evaluate resultEvaluate = evaluateRepository.save(evaluate);
 
         return new EvaluateResponseDto(
