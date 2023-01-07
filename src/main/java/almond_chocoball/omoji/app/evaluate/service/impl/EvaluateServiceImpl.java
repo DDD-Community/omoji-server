@@ -1,7 +1,7 @@
 package almond_chocoball.omoji.app.evaluate.service.impl;
 
+import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.evaluate.dto.request.EvaluateRequestDto;
-import almond_chocoball.omoji.app.evaluate.dto.response.EvaluateResponseDto;
 import almond_chocoball.omoji.app.evaluate.entity.Evaluate;
 import almond_chocoball.omoji.app.evaluate.repository.EvaluateRepository;
 import almond_chocoball.omoji.app.evaluate.service.EvaluateService;
@@ -23,17 +23,14 @@ public class EvaluateServiceImpl implements EvaluateService {
     private final PostRepository postRepository;
 
     @Override
-    public EvaluateResponseDto insertEvaluate(Member member, EvaluateRequestDto evaluateRequestDto) {
+    public SimpleSuccessResponse insertEvaluate(Member member, EvaluateRequestDto evaluateRequestDto) {
         Post post = postRepository.findById(evaluateRequestDto.getPostId())
                 .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다.");});
         Evaluate evaluate = evaluateRequestDto.toEvaluate(member, post);
         Evaluate resultEvaluate = evaluateRepository.save(evaluate);
 
-        return new EvaluateResponseDto(
-                resultEvaluate.getId(),
-                resultEvaluate.getMember(),
-                resultEvaluate.getPost(),
-                resultEvaluate.getEvaluateEnum()
+        return new SimpleSuccessResponse(
+                resultEvaluate.getId()
         );
     }
 

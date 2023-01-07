@@ -2,8 +2,8 @@ package almond_chocoball.omoji.app.evaluate.controller;
 
 import almond_chocoball.omoji.app.auth.dto.CustomUserDetails;
 import almond_chocoball.omoji.app.common.dto.ApiResponse;
+import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.evaluate.dto.request.EvaluateRequestDto;
-import almond_chocoball.omoji.app.evaluate.dto.response.EvaluateResponseDto;
 import almond_chocoball.omoji.app.evaluate.service.EvaluateService;
 import almond_chocoball.omoji.app.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,8 +26,8 @@ public class EvaluateController {
     @PostMapping()
     @Tag(name = "Evaluate post")
     @Operation(summary = "평가하기", description = "Post ID를 입력받고 좋아요(LIKE), 싫어요(DISLIKE), 넘어가기(PASS)를 선택항 값 증가")
-    public ResponseEntity<EvaluateResponseDto> postEvaluate(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                            @RequestBody EvaluateRequestDto evaluateRequestDto) {
+    public ResponseEntity<SimpleSuccessResponse> postEvaluate(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                              @RequestBody EvaluateRequestDto evaluateRequestDto) {
         return ApiResponse.success(evaluateService.insertEvaluate(
                 memberService.findMember(userDetails),
                 evaluateRequestDto));
