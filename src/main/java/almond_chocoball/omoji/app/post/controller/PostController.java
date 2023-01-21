@@ -68,4 +68,27 @@ public class PostController {
                 memberService.findMember(userDetails),
                 pagingRequestDto.getStart(), pagingRequestDto.getLimit()));
     }
+
+    @Tag(name = "Post")
+    @DeleteMapping("/{id}")
+    @Operation(summary = "글 삭제", description = "내가 쓴 글 삭제")
+    public ResponseEntity<SimpleSuccessResponse> deletePost(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                            @PathVariable("id") Long id) {
+        return ApiResponse.success(postService.removeMyPost(
+                memberService.findMember(userDetails),
+                id
+        ));
+    }
+
+    @Tag(name = "Post")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "글 수정", description = "내가 쓴 글 수정")
+    public ResponseEntity<SimpleSuccessResponse> updatePost(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                            @Valid PostRequestDto postRequestDto,
+                                                            @RequestParam("imgs") List<MultipartFile> imgFileList) throws Exception {
+        return ApiResponse.success(postService.updatePost(
+                memberService.findMember(userDetails),
+                postRequestDto, imgFileList));
+
+    }
 }

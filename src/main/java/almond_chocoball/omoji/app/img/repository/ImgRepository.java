@@ -10,5 +10,10 @@ import java.util.List;
 
 public interface ImgRepository extends JpaRepository<Img, Long> {
     @Query("SELECT i.url FROM Img i WHERE i.post=:post")
-    List<String> findUrlByPostIdOrderByIdAsc(@Param("post") Post post);
+    List<String> findUrlByPostId(@Param("post") Post post);
+
+    @Query("SELECT i FROM Img i WHERE i.post=:post")
+    List<Img> findByPostId(@Param("post") Post post);
+
+    void deleteAllByPost(Post post);
 }

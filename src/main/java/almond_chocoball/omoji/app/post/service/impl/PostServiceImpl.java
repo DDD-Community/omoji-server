@@ -1,11 +1,13 @@
 package almond_chocoball.omoji.app.post.service.impl;
 
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
-import almond_chocoball.omoji.app.img.entity.Img;
 import almond_chocoball.omoji.app.img.service.ImgService;
 import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
-import almond_chocoball.omoji.app.post.dto.response.*;
+import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
+import almond_chocoball.omoji.app.post.dto.response.MyPostPagingResponseDto;
+import almond_chocoball.omoji.app.post.dto.response.PostPagingResponseDto;
+import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
 import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.PostRepository;
 import almond_chocoball.omoji.app.post.service.PostService;
@@ -32,19 +34,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public SimpleSuccessResponse uploadPost(Member member, PostRequestDto postRequestDto,
-                                            List<MultipartFile> imgFileList) throws Exception {
-        if (imgFileList.get(0).isEmpty()){
-            throw new RuntimeException("최소 1 장의 사진을 첨부해야 합니다.");
-        }
-        if (imgFileList.size() > 5){
-            throw new RuntimeException("최대 5 장까지 첨부 가능합니다.");
-        }
+                                            List<MultipartFile> imgFileList) {
+        checkImgsLen(imgFileList); //이미지 개수 확인
+        checkContentType(imgFileList); //파일 타입 확인
 
         Post post = postRequestDto.toPost();
-        post.setMember(member);
+        post.createPost(member);
 
         Long id = postRepository.save(post).getId(); //post등록
-        uploadImgs(post, imgFileList); //img등록
+
+        imgFileList.forEach(imgFile -> { //img등록
+            imgService.uploadImg(post, imgFile);
+        });
 
         return new SimpleSuccessResponse(id);
     }
@@ -61,26 +62,6 @@ public class PostServiceImpl implements PostService {
         detailPostResponseDto.setImgs(imgUrls);
 
         return detailPostResponseDto;
-    }
-
-
-    private void uploadImgs(Post post, List<MultipartFile> imgFileList) throws Exception {
-        for (MultipartFile multipartFile : imgFileList) {
-            if (!Objects.requireNonNull(multipartFile.getContentType()).contains("image")) {
-                throw new RuntimeException("이미지 파일만 업로드 가능합니다.");
-            }
-        }
-        for(int i=0;i<imgFileList.size();i++){
-            Img img = new Img();
-            img.setPost(post);
-
-            if(i == 0)
-                img.setRepresent(true); //대표 이미지
-            else
-                img.setRepresent(false);
-
-            imgService.uploadImg(img, imgFileList.get(i));
-        }
     }
 
     @Override
@@ -111,7 +92,50 @@ public class PostServiceImpl implements PostService {
         return new PostsResponseDto(myPostPagingResponseDtoList);
     }
 
+    @Override
+    public SimpleSuccessResponse removeMyPost(Member member, Long id) {
+        Post post = postRepository.findByIdAndMember(id, member)
+                .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
+        imgService.deleteImgs(post);
+        postRepository.delete(post);
+        return new SimpleSuccessResponse(id);
+    }
+
+    @Override
+    public SimpleSuccessResponse updatePost(Member member, PostRequestDto postRequestDto,
+                                            List<MultipartFile> imgFileList) {
+        checkImgsLen(imgFileList);
+        checkContentType(imgFileList);
+
+        Post findPost = postRepository.findByIdAndMember(postRequestDto.getId(), member)
+                .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다.");});
+
+        findPost.updatePost(postRequestDto.toPost()); //변경 감지
+
+        imgService.updateImg(findPost, imgFileList);
+
+        return new SimpleSuccessResponse(findPost.getId());
+    }
+
     private Sort sortByCreatedAt() {
         return Sort.by(Sort.Direction.DESC, "createdAt");
     }
+
+    private void checkImgsLen(List<MultipartFile> imgFileList) {
+        if (imgFileList.get(0).isEmpty()){
+            throw new RuntimeException("최소 1 장의 사진을 첨부해야 합니다.");
+        }
+        if (imgFileList.size() > 5){
+            throw new RuntimeException("최대 5 장까지 첨부 가능합니다.");
+        }
+    }
+
+    private void checkContentType(List<MultipartFile> imgFileList) {
+        for (MultipartFile multipartFile : imgFileList) {
+            if (!Objects.requireNonNull(multipartFile.getContentType()).contains("image")) {
+                throw new RuntimeException("이미지 파일만 업로드 가능합니다.");
+            }
+        }
+    }
+
 }

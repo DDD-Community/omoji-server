@@ -30,7 +30,13 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public void createItem(Member member) {//나중에 tag도 넘겨받음
+    public void createPost(Member member) {//나중에 tag도 넘겨받음
         this.member = member;
     }
+
+    public void updatePost(Post post) {
+        this.title = post.getTitle();
+        this.description = post.getDescription();
+    }
+
 }

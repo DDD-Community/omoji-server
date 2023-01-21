@@ -26,8 +26,6 @@ public class Img extends BaseTimeEntity {
     @Column(length = 500)
     private String url; //이미지 조회 경로
 
-    private Boolean represent; //대표 이미지 여부
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;

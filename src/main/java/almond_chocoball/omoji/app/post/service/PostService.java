@@ -12,11 +12,16 @@ import java.util.List;
 
 public interface PostService {
 
-    SimpleSuccessResponse uploadPost(Member member, PostRequestDto postRequestDto, List<MultipartFile> imgFileList) throws Exception;
+    SimpleSuccessResponse uploadPost(Member member, PostRequestDto postRequestDto, List<MultipartFile> imgFileList);
 
     DetailPostResponseDto getPost(Long id);
 
     PostsResponseDto<List<PostPagingResponseDto>> getPostsWithPaging(Member member, int start, int limit);
 
     PostsResponseDto<List<DetailPostResponseDto>> getMyPostsWithPaging(Member member, int start, int limit);
+
+    SimpleSuccessResponse removeMyPost(Member member, Long id);
+
+    SimpleSuccessResponse updatePost(Member member, PostRequestDto postRequestDto,
+                                     List<MultipartFile> imgFileList);
 }
