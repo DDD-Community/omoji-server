@@ -1,6 +1,8 @@
 package almond_chocoball.omoji.app.post.dto.request;
 
 import almond_chocoball.omoji.app.common.utils.CustomObjectMapper;
+import almond_chocoball.omoji.app.hashtag.entity.HashtagPost;
+import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.post.entity.Post;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +11,8 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,8 +27,11 @@ public class PostRequestDto {
     @Size(max=100)
     private String description;
 
-    public Post toPost() { //Dto->Entity
+    private List<Long> hashtagIds = new ArrayList<>();
+
+    public Post toPost(Member member, List<HashtagPost> hashtagPosts) { //Dto->Entity
         Post post = CustomObjectMapper.to(this, Post.class);
+        post.createPost(member, hashtagPosts);
         return post;
     }
 }
