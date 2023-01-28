@@ -2,6 +2,7 @@ package almond_chocoball.omoji.app.evaluate.dto.response;
 
 import almond_chocoball.omoji.app.common.utils.CustomObjectMapper;
 import almond_chocoball.omoji.app.evaluate.enums.EvaluateEnum;
+import almond_chocoball.omoji.app.hashtag.dto.response.HashtagResponseDto;
 import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.post.entity.Post;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ public class EvaluatePostResponseDto {
     private Long id;
     private String title;
     private List<String> imgs;
+    private List<HashtagResponseDto> hashtags;
 
     public static EvaluatePostResponseDto of(Post post) {
         return CustomObjectMapper.to(post, EvaluatePostResponseDto.class);
