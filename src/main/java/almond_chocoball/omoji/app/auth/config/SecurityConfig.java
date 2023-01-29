@@ -33,7 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity webSecurity) throws Exception{ //스프링 시큐리티(httpSecurity인증,인가) 적용 전
         webSecurity.ignoring().antMatchers("/favicon.ico", "/docs/**", "/configuration/**",
-                "/webjars/**","/webjars/springfox-swagger-ui/*.{js,css}","/swagger-resources/configuration/**","/swagger-ui/**","/swagger**","/v3/api-docs");
+                "/webjars/**","/webjars/springfox-swagger-ui/*.{js,css}","/swagger-resources/configuration/**","/swagger-ui/**","/swagger**","/v3/api-docs",
+                "/error", "/**/*.svg", "/**/*.css", "/**/*.js");
 
     }
 
@@ -49,13 +50,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests() //아래부터 인증 절차 설정하겠다
                     .antMatchers(HttpMethod.OPTIONS).permitAll()
                     .antMatchers("/oauth2/**").permitAll()
-                    .antMatchers("/api/v1/auth/**").permitAll()
+                    .antMatchers("/api/v1/auth/login").permitAll()
+                    .antMatchers("/api/**/login/oauth2/**").permitAll()
+                    .antMatchers("/api/**/auth/**").permitAll()
+                    .antMatchers("/favicon.*").permitAll()
                     //.antMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                    .anyRequest().authenticated()
-                .and()
-                    .headers()
-                    .frameOptions()
-                    .sameOrigin();
+                    .anyRequest().authenticated();
 
 
         http
