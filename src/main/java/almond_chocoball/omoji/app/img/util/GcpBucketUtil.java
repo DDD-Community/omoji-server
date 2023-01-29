@@ -76,7 +76,7 @@ public class GcpBucketUtil {
             Path path1 = Paths.get(savedFileName.toString());
             Files.deleteIfExists(path1); //압축 결과 파일 삭제
             return new ImgResponseDto(blob.getName(),
-                    String.format("%s/%s/%s/%s", "https://storage.googleapis.com",
+                    String.format("%s/%s/%s", "https://storage.googleapis.com",
                             gcpBucketId, blob.getName()));
         }
 
