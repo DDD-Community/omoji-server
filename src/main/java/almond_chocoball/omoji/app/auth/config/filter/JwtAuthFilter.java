@@ -26,7 +26,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {//jwtTokenProvider를 �
                                  FilterChain chain) throws IOException, ServletException {
 
         final String token = jwtTokenProvider.resolveToken(request); //request Header 통해 accessToken받음
-
         if (token != null) {
             if (jwtValidation.validateToken(token)  //jwt 유효성 검사 통과
                     //&& jwtTokenProvider.checkBlackList(token)) { //블랙리스트에 없는 토큰이면
@@ -34,8 +33,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {//jwtTokenProvider를 �
                 Authentication auth = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
-        } else {
-            SecurityContextHolder.getContext().getAuthentication();
         }
         chain.doFilter(request, response);
     }
