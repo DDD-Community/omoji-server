@@ -56,4 +56,4 @@ server:
   port: 9090
 logging:
   level:
-    root: error
+    root: debug
