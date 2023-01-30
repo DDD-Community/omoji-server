@@ -9,6 +9,7 @@ import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
 import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
 import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
 import almond_chocoball.omoji.app.post.service.PostService;
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -45,24 +46,25 @@ public class PostController {
     @Operation(summary = "post 생성", description = "Post를 생성하는 API")
     public ResponseEntity<SimpleSuccessResponse> uploadPost(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @Valid PostRequestDto postRequestDto,
-                                                            @RequestParam("imgs") List<MultipartFile> imgFileList) throws Exception {
+                                                            @ApiParam(name = "imgs", required = true) @RequestPart(value = "imgs")
+                                                                @RequestParam("imgs") List<MultipartFile> imgFileList) throws Exception {
         return ApiResponse.created(postService.uploadPost(
                 memberService.findMember(userDetails),
                 postRequestDto, imgFileList));
     }
 
-    @Tag(name = "Post")
-    @GetMapping()
-    @Operation(summary = "내가 쓴 글 빼고 start부터 limit까지 post 조회", description = "start부터 limit까지 post 조회하는 API")
-    public ResponseEntity<PostsResponseDto<?>> getPostsWithPaging(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                  PostPagingRequestDto pagingRequestDto) {
-        return ApiResponse.success(postService.getPostsWithPaging(memberService.findMember(userDetails), pagingRequestDto.getStart(), pagingRequestDto.getLimit()));
-    }
+//    @Tag(name = "Post")
+//    @GetMapping()
+//    @Operation(summary = "내가 쓴 글 빼고 start부터 limit까지 post 조회", description = "start부터 limit까지 post 조회하는 API")
+//    public ResponseEntity<PostsResponseDto<?>> getPostsWithPaging(@AuthenticationPrincipal CustomUserDetails userDetails,
+//                                                                  PostPagingRequestDto pagingRequestDto) {
+//        return ApiResponse.success(postService.getPostsWithPaging(memberService.findMember(userDetails), pagingRequestDto.getStart(), pagingRequestDto.getLimit()));
+//    }
 
     @Tag(name = "Post")
     @GetMapping("/profile") //내가 쓴 글만
     @Operation(summary = "start부터 limit까지 특정 user의 post 조회", description = "start부터 limit까지 특정 user의 post 조회 API")
-    public ResponseEntity<PostsResponseDto<?>> getMyPostsWithPaging(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public ResponseEntity<PostsResponseDto<List<DetailPostResponseDto>>> getMyPostsWithPaging(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                     PostPagingRequestDto pagingRequestDto) {
         return ApiResponse.success(postService.getMyPostsWithPaging(
                 memberService.findMember(userDetails),
@@ -85,6 +87,7 @@ public class PostController {
     @Operation(summary = "글 수정", description = "내가 쓴 글 수정")
     public ResponseEntity<SimpleSuccessResponse> updatePost(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                             @Valid PostRequestDto postRequestDto,
+                                                            @ApiParam(name = "imgs", required = true) @RequestPart(value = "imgs")
                                                             @RequestParam("imgs") List<MultipartFile> imgFileList) throws Exception {
         return ApiResponse.success(postService.updatePost(
                 memberService.findMember(userDetails),
