@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class HashtagResponseDto {
 
-    private Long parent_id;
+    private String category;
 
-    private Long id;
+    private String hashtag;
 
     public HashtagResponseDto(HashtagPost hashtagPost) {
-        this.parent_id = hashtagPost.getHashtag().getParent().getId();
-        this.id = hashtagPost.getHashtag().getId();
+        this.category = hashtagPost.getHashtag().getParent().getName();
+        this.hashtag = hashtagPost.getHashtag().getName();
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    private static final String tokenPrefix = "Bearer";
     private final long tokenPeriod = 1000L * 60L * 60L * 24L; //1일 후 만료
     private final long refreshPeriod = 1000L * 60L * 60L * 24L * 30L; //30일
 
@@ -58,6 +60,7 @@ public class JwtTokenProvider {
         Date now = new Date();
 
         Token token = new Token(
+                tokenPrefix,
                 nickname,
                 Jwts.builder()
                         .setSubject(socialId)
@@ -121,8 +124,11 @@ public class JwtTokenProvider {
 
     //Client의 request 헤더 값으로 받은 토큰 값 리턴
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("Authorization");
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(tokenPrefix)) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
-
 
 }

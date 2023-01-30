@@ -52,8 +52,9 @@ spring:
     activate:
       on-profile: prod
     import: application-oauth.yml
+  jpa.hibernate.ddl-auto: create-drop
 server:
   port: 9090
 logging:
   level:
-    root: debug
+    root: info
