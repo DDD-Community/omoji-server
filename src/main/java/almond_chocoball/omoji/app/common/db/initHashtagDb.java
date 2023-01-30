@@ -2,12 +2,14 @@ package almond_chocoball.omoji.app.common.db;
 
 import almond_chocoball.omoji.app.hashtag.entity.Hashtag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
+@Profile("local")
 @Component
 @RequiredArgsConstructor
 public class initHashtagDb {
