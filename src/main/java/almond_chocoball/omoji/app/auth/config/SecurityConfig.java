@@ -4,6 +4,7 @@ import almond_chocoball.omoji.app.auth.config.filter.ExceptionHandlerFilter;
 import almond_chocoball.omoji.app.auth.config.filter.JwtAuthFilter;
 import almond_chocoball.omoji.app.auth.config.handler.CustomAccessDeniedHandler;
 import almond_chocoball.omoji.app.auth.config.handler.CustomAuthenticationEntryPoint;
+import almond_chocoball.omoji.app.auth.config.handler.OAuth2FailureHandler;
 import almond_chocoball.omoji.app.auth.config.handler.OAuth2SuccessHandler;
 import almond_chocoball.omoji.app.auth.service.CustomOAuth2Service;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2Service customOAuth2Service;
     private final OAuth2SuccessHandler successHandler;
+    private final OAuth2FailureHandler failureHandler;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
@@ -49,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests() //아래부터 인증 절차 설정하겠다
                     .antMatchers(HttpMethod.OPTIONS).permitAll()
-                    .antMatchers("/login/oauth2/**").permitAll()
+                    .antMatchers("/login/**").permitAll()
                     .antMatchers("/api/v1/auth/**").permitAll()
                     .antMatchers("/favicon.*").anonymous()
                     //.antMatchers("/api/v1/admin/**").hasRole("ADMIN")
@@ -62,13 +64,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .userInfoEndpoint() //oauth로그인 성공 후 설정 시작
                 .userService(customOAuth2Service) //custom한 oauthservice연결 -> oAuth2User반환
-                .and().successHandler(successHandler)
+                .and()
+                    .successHandler(successHandler)
+                    .failureHandler(failureHandler)
                 .permitAll()
 
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint)//인증 과정에서 오류 발생
-                .accessDeniedHandler(customAccessDeniedHandler); //권한 확인 과정에서 예외 발생 시 전달
+                .accessDeniedHandler(customAccessDeniedHandler); //@preauthorized권한 확인 과정에서 예외 발생 시 전달
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(exceptionHandlerFilter, JwtAuthFilter.class);
