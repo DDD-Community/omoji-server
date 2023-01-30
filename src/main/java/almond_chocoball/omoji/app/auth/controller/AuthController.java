@@ -5,12 +5,14 @@ import almond_chocoball.omoji.app.auth.dto.Token;
 import almond_chocoball.omoji.app.auth.service.AuthService;
 import almond_chocoball.omoji.app.common.dto.ApiResponse;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
+import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 public class AuthController {
 
     private final AuthService authService;
+    private final String tokenPrefix = "Bearer";
 
     @Tag(name = "OAuth")
     @Operation(summary = "accessToken 갱신", description = "Header에 Access, Refresh 첨부")
@@ -43,12 +46,16 @@ public class AuthController {
     }
 
     //refresh시 accesstoken, refreshtoken을 전달받음
-    private RefreshRequest refreshHeader(HttpServletRequest request) {
+    private RefreshRequest refreshHeader(HttpServletRequest request) throws JwtException {
         String accessToken = request.getHeader("Access");
         String refreshToken = request.getHeader("Refresh");
-        return RefreshRequest.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        if (StringUtils.hasText(accessToken) && StringUtils.hasText(refreshToken) &&
+                accessToken.startsWith(tokenPrefix) && accessToken.startsWith(tokenPrefix)) {
+            return RefreshRequest.builder()
+                    .accessToken(accessToken.substring(7))
+                    .refreshToken(refreshToken.substring(7))
+                    .build();
+        }
+        return null;
     }
 }
