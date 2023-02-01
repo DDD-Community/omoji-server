@@ -22,3 +22,10 @@ spring:
 
 jwt:   #HS512 알고리즘을 사용할 것이기 때문에 512bit, 즉 64byte 이상의 secret key를 사용해야 한다.
   secret: ${JWT_SECRET}
+app:
+  authorizedRedirectUris:
+    - http://localhost:3000/oauth2/redirect
+    - http://localhost:8080/login/oauth2/code/naver
+    - https://omoji-server-vo2dfmd2vq-du.a.run.app/login/oauth2/code/naver
+    - myandroidapp://oauth2/redirect
+    - myiosapp://oauth2/redirect
