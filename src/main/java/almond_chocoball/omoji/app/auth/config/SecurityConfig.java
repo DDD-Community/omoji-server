@@ -19,7 +19,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @RequiredArgsConstructor
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true,
+        prePostEnabled = true
+)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2Service customOAuth2Service;
@@ -31,6 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     private final JwtAuthFilter jwtAuthFilter;
+
+    private final HttpCookieOAuth2RequestRepository httpCookieOAuth2RequestRepository;
 
     @Override
     public void configure(WebSecurity webSecurity) { //스프링 시큐리티(httpSecurity인증,인가) 적용 전
@@ -51,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests() //아래부터 인증 절차 설정하겠다
                     .antMatchers(HttpMethod.OPTIONS).permitAll()
-                    .antMatchers("/login/**").permitAll()
+                    .antMatchers("/login/**", "/auth/**", "/oauth2/**").permitAll()
                     .antMatchers("/api/v1/auth/**").permitAll()
                     .antMatchers("/favicon.*").anonymous()
                     //.antMatchers("/api/v1/admin/**").hasRole("ADMIN")
@@ -61,6 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .oauth2Login()
                 .authorizationEndpoint().baseUri("/api/v1/auth/login")
+                .authorizationRequestRepository(httpCookieOAuth2RequestRepository)
                 .and()
                 .userInfoEndpoint() //oauth로그인 성공 후 설정 시작
                 .userService(customOAuth2Service) //custom한 oauthservice연결 -> oAuth2User반환
