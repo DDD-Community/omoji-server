@@ -1,7 +1,7 @@
 package almond_chocoball.omoji.app.auth.config.handler;
 
-import almond_chocoball.omoji.app.common.utils.CookieUtils;
 import almond_chocoball.omoji.app.auth.config.HttpCookieOAuth2RequestRepository;
+import almond_chocoball.omoji.app.common.utils.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
