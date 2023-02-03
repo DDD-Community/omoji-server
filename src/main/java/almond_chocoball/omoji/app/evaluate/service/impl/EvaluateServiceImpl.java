@@ -7,11 +7,8 @@ import almond_chocoball.omoji.app.evaluate.entity.Evaluate;
 import almond_chocoball.omoji.app.evaluate.repository.EvaluateRepository;
 import almond_chocoball.omoji.app.evaluate.service.EvaluateService;
 import almond_chocoball.omoji.app.hashtag.dto.response.HashtagResponseDto;
-import almond_chocoball.omoji.app.hashtag.service.HashtagService;
 import almond_chocoball.omoji.app.img.service.ImgService;
 import almond_chocoball.omoji.app.member.entity.Member;
-import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
-import almond_chocoball.omoji.app.post.dto.response.PostPagingResponseDto;
 import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +29,6 @@ public class EvaluateServiceImpl implements EvaluateService {
     private final EvaluateRepository evaluateRepository;
     private final PostRepository postRepository;
     private final ImgService imgService;
-    private final HashtagService hashtagService;
 
     @Override
     public List<EvaluatePostResponseDto> getEvaulateIdByMemberId(Member member){
@@ -45,7 +40,7 @@ public class EvaluateServiceImpl implements EvaluateService {
                     post_item.getTitle(),
                     imgService.getImgUrls(post_item),
                     post_item.getHashtagPosts().stream()
-                            .map(hashtagPost -> new HashtagResponseDto(hashtagPost))
+                            .map(hashtagPost -> new HashtagResponseDto(hashtagPost).getName())
                             .collect(Collectors.toList())
                     );
             evaluatePostResponseDtoList.add(evaluatePostResponseDto);

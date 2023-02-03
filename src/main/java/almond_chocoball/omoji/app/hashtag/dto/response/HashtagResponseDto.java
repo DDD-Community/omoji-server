@@ -10,12 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class HashtagResponseDto {
 
-    private String category;
-
-    private String hashtag;
+    private String name;
 
     public HashtagResponseDto(HashtagPost hashtagPost) {
-        this.category = hashtagPost.getHashtag().getParent().getName();
-        this.hashtag = hashtagPost.getHashtag().getName();
+        this.name = hashtagPost.getHashtag().getName();
     }
 }
