@@ -23,6 +23,7 @@ spring:
         format_sql: true
 server:
   forward-headers-strategy: framework
+  use-forward-headers: true
 --- #local 환경
 spring:
   config:
