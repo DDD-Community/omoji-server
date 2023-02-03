@@ -53,14 +53,6 @@ public class PostController {
                 postRequestDto, imgFileList));
     }
 
-//    @Tag(name = "Post")
-//    @GetMapping()
-//    @Operation(summary = "내가 쓴 글 빼고 start부터 limit까지 post 조회", description = "start부터 limit까지 post 조회하는 API")
-//    public ResponseEntity<PostsResponseDto<?>> getPostsWithPaging(@AuthenticationPrincipal CustomUserDetails userDetails,
-//                                                                  PostPagingRequestDto pagingRequestDto) {
-//        return ApiResponse.success(postService.getPostsWithPaging(memberService.findMember(userDetails), pagingRequestDto.getStart(), pagingRequestDto.getLimit()));
-//    }
-
     @Tag(name = "Post")
     @GetMapping("/profile") //내가 쓴 글만
     @Operation(summary = "start부터 limit까지 특정 user의 post 조회", description = "start부터 limit까지 특정 user의 post 조회 API")
