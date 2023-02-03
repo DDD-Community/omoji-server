@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -18,8 +20,11 @@ public class HashtagServiceImpl implements HashtagService {
     private final HashtagRepository hashtagRepository;
 
     @Override
-    public List<HashtagPost> getHashtagPosts(List<Long> hashtagIds) {
-        List<Hashtag> hashtags = hashtagRepository.findAllById(hashtagIds);
+    public List<HashtagPost> getHashtagPosts(List<String> hashtagNames) {
+        List<Hashtag> hashtags = hashtagNames.stream()
+                .map(hashtagName -> hashtagRepository.findByName(hashtagName)
+                        .orElseThrow(()->new NoSuchElementException("존재하는 Hashtag에서 선택해주십시오.")))
+                .collect(Collectors.toList());
         return HashtagPost.createHashtagPost(hashtags);
     }
 }

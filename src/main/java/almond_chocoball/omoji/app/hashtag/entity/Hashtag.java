@@ -29,7 +29,7 @@ public class Hashtag {
     @JsonIgnore
     private Hashtag parent; //주인
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true) //자식 list추가 후 저장 시 해당 entity도 persist
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST, orphanRemoval = true) //자식 list추가 후 저장 시 해당 entity도 persist
     @ToString.Exclude
     @JsonIgnore
     private List<Hashtag> child = new ArrayList<>(); //종속

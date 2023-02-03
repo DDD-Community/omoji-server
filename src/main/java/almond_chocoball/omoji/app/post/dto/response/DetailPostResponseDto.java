@@ -33,13 +33,13 @@ public class DetailPostResponseDto {
 
     private List<String> imgs;  //img_url만 받아라
 
-    private List<HashtagResponseDto> hashtags;
+    private List<String> hashtags;
 
 
     public static DetailPostResponseDto of(Post post) { //Entity->Dto
         DetailPostResponseDto detailPostResponseDto = CustomObjectMapper.to(post, DetailPostResponseDto.class);
         detailPostResponseDto.hashtags = post.getHashtagPosts().stream()
-                .map(hashtagPost -> new HashtagResponseDto(hashtagPost))
+                .map(hashtagPost -> new HashtagResponseDto(hashtagPost).getName())
                 .collect(Collectors.toList());
         return detailPostResponseDto;
     }

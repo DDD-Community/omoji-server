@@ -8,11 +8,9 @@ import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
 import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
 import almond_chocoball.omoji.app.post.dto.response.MyPostPagingResponseDto;
-import almond_chocoball.omoji.app.post.dto.response.PostPagingResponseDto;
 import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
 import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.PostRepository;
-import almond_chocoball.omoji.app.post.repository.dao.PostDaoImpl;
 import almond_chocoball.omoji.app.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,15 +34,13 @@ public class PostServiceImpl implements PostService {
     private final ImgService imgService;
     private final HashtagService hashtagService;
 
-    private final PostDaoImpl postDao;
-
     @Override
     public SimpleSuccessResponse uploadPost(Member member, PostRequestDto postRequestDto,
                                             List<MultipartFile> imgFileList) {
         checkImgsLen(imgFileList); //이미지 개수 확인
         checkContentType(imgFileList); //파일 타입 확인
 
-        List<HashtagPost> hashtagPosts = hashtagService.getHashtagPosts(postRequestDto.getHashtagIds());
+        List<HashtagPost> hashtagPosts = hashtagService.getHashtagPosts(postRequestDto.getEvents());
 
         Post post = postRequestDto.toPost(member, hashtagPosts);
 
@@ -69,20 +65,6 @@ public class PostServiceImpl implements PostService {
         detailPostResponseDto.setImgs(imgUrls);
 
         return detailPostResponseDto;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public PostsResponseDto<List<PostPagingResponseDto>> getPostsWithPaging(Member member,
-                                                                            int page, int size) {
-        Sort sort = sortByCreatedAt();
-        List<Post> allPosts = postDao.getAllWithHashtagByMemberNot(member);
-        List<PostPagingResponseDto> pagingResponseDtoList = allPosts.stream().map(post -> {
-            PostPagingResponseDto pagingResponseDto = PostPagingResponseDto.of(post);
-            pagingResponseDto.setImgs(imgService.getImgUrls(post));
-            return pagingResponseDto;
-        }).collect(Collectors.toList());
-        return new PostsResponseDto(pagingResponseDtoList);
     }
 
     @Override
@@ -117,7 +99,7 @@ public class PostServiceImpl implements PostService {
         Post findPost = postRepository.findByIdAndMember(postRequestDto.getId(), member)
                 .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다.");});
 
-        List<HashtagPost> hashtagPosts = hashtagService.getHashtagPosts(postRequestDto.getHashtagIds());
+        List<HashtagPost> hashtagPosts = hashtagService.getHashtagPosts(postRequestDto.getEvents());
 
         Post requestPost = postRequestDto.toPost(member, hashtagPosts);
         findPost.updatePost(requestPost); //변경 감지
