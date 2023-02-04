@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -37,8 +38,9 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private final long tokenPeriod = 1000L * 60L * 60L * 24L; //1일 후 만료
-    private final long refreshPeriod = 1000L * 60L * 60L * 24L * 30L; //30일
+    private static final String tokenPrefix = "Bearer";
+    private final long tokenPeriod = 1000L * 60L * 60L * 24L * 30L; //30일
+    private final long refreshPeriod = 1000L * 60L * 60L * 24L * 90L; //30일
 
     @PostConstruct //의존성 주입 후 실행
     protected void init() { //secretKey를 BASE64 encoding
@@ -46,18 +48,16 @@ public class JwtTokenProvider {
     }
 
     @Transactional
-    public Token generateToken(Authentication authentication) {
-
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-
-        String socialId = user.getSocialId();
-        String nickname = user.getNickname();
-        String role = authentication.getAuthorities().stream()
+    public Token generateToken(CustomUserDetails userDetails) {
+        String socialId = userDetails.getSocialId();
+        String nickname = userDetails.getNickname();
+        String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
         Date now = new Date();
 
         Token token = new Token(
+                tokenPrefix,
                 nickname,
                 Jwts.builder()
                         .setSubject(socialId)
@@ -73,15 +73,13 @@ public class JwtTokenProvider {
                         .signWith(SignatureAlgorithm.HS256, secretKey)
                         .compact());
 
-        saveRefreshToken(authentication, token.getRefreshToken());
+        saveRefreshToken(userDetails, token.getRefreshToken());
         return token;
     }
 
     @Transactional
-    private void saveRefreshToken(Authentication authentication, String refreshToken) {
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        String socialId = user.getName();
-
+    private void saveRefreshToken(CustomUserDetails userDetails, String refreshToken) {
+        String socialId = userDetails.getName();
         memberRepository.updateRefreshToken(socialId, refreshToken);
     }
 
@@ -121,8 +119,11 @@ public class JwtTokenProvider {
 
     //Client의 request 헤더 값으로 받은 토큰 값 리턴
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("Authorization");
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(tokenPrefix)) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
-
 
 }

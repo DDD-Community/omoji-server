@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface HashtagService {
 
-    List<HashtagPost> getHashtagPosts(List<Long> hashtagIds);
+    List<HashtagPost> getHashtagPosts(List<String> hashtagNames);
 }

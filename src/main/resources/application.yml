@@ -23,6 +23,7 @@ spring:
         format_sql: true
 server:
   forward-headers-strategy: framework
+  use-forward-headers: true
 --- #local 환경
 spring:
   config:
@@ -32,10 +33,9 @@ spring:
   jpa.hibernate.ddl-auto: create-drop
 logging:
   level:
-    root: debug
+    root: info
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql: trace
-
 --- #dev 환경
 spring:
   config:
@@ -51,9 +51,10 @@ spring:
   config:
     activate:
       on-profile: prod
+    jpa.hibernate.ddl-auto: update
     import: application-oauth.yml
 server:
   port: 9090
 logging:
   level:
-    root: error
+    root: info

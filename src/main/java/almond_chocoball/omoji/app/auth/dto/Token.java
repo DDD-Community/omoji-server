@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 public class Token {
 
+    private String tokenPrefix;
     private String nickname;
     private String accessToken;
     private String refreshToken;

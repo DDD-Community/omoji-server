@@ -27,7 +27,7 @@ public class PostRequestDto {
     @Size(max=100)
     private String description;
 
-    private List<Long> hashtagIds = new ArrayList<>();
+    private List<String> events = new ArrayList<>(); //상황
 
     public Post toPost(Member member, List<HashtagPost> hashtagPosts) { //Dto->Entity
         Post post = CustomObjectMapper.to(this, Post.class);

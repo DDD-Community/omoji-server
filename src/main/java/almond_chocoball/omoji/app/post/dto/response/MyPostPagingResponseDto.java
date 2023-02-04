@@ -27,12 +27,12 @@ public class MyPostPagingResponseDto {
 
     private List<String> imgs;
 
-    private List<HashtagResponseDto> hashtags;
+    private List<String> hashtags;
 
     public static MyPostPagingResponseDto of(Post post) { //Entity->Dto
         MyPostPagingResponseDto myPostPagingResponseDto = CustomObjectMapper.to(post, MyPostPagingResponseDto.class);
         myPostPagingResponseDto.hashtags = post.getHashtagPosts().stream()
-                .map(hashtagPost -> new HashtagResponseDto(hashtagPost))
+                .map(hashtagPost -> new HashtagResponseDto(hashtagPost).getName())
                 .collect(Collectors.toList());
         return myPostPagingResponseDto;
     }

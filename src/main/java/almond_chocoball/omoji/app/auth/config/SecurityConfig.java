@@ -4,8 +4,6 @@ import almond_chocoball.omoji.app.auth.config.filter.ExceptionHandlerFilter;
 import almond_chocoball.omoji.app.auth.config.filter.JwtAuthFilter;
 import almond_chocoball.omoji.app.auth.config.handler.CustomAccessDeniedHandler;
 import almond_chocoball.omoji.app.auth.config.handler.CustomAuthenticationEntryPoint;
-import almond_chocoball.omoji.app.auth.config.handler.OAuth2SuccessHandler;
-import almond_chocoball.omoji.app.auth.service.CustomOAuth2Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,22 +16,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @RequiredArgsConstructor
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true,
+        prePostEnabled = true
+)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final CustomOAuth2Service customOAuth2Service;
-    private final OAuth2SuccessHandler successHandler;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
     private final ExceptionHandlerFilter exceptionHandlerFilter;
-
     private final JwtAuthFilter jwtAuthFilter;
 
     @Override
-    public void configure(WebSecurity webSecurity) throws Exception{ //스프링 시큐리티(httpSecurity인증,인가) 적용 전
+    public void configure(WebSecurity webSecurity) { //스프링 시큐리티(httpSecurity인증,인가) 적용 전
         webSecurity.ignoring().antMatchers("/favicon.ico", "/docs/**", "/configuration/**",
-                "/webjars/**","/webjars/springfox-swagger-ui/*.{js,css}","/swagger-resources/configuration/**","/swagger-ui/**","/swagger**","/v3/api-docs");
+                "/webjars/**","/webjars/springfox-swagger-ui/*.{js,css}","/swagger-resources/configuration/**","/swagger-ui/**","/swagger**","/v3/api-docs",
+                "/error", "/**/*.svg", "/**/*.css", "/**/*.js");
 
     }
 
@@ -48,24 +46,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests() //아래부터 인증 절차 설정하겠다
                     .antMatchers(HttpMethod.OPTIONS).permitAll()
-                    .antMatchers("/oauth2/**").permitAll()
                     .antMatchers("/api/v1/auth/**").permitAll()
+                    .antMatchers("/favicon.*").anonymous()
                     //.antMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                    .anyRequest().authenticated(); //그외는 인증된 사용자만 접근 가능
+                    .anyRequest().authenticated();
+
 
         http
-                .oauth2Login()
-                .authorizationEndpoint().baseUri("/api/v1/auth/login")
-                .and()
-                .userInfoEndpoint() //oauth로그인 성공 후 설정 시작
-                .userService(customOAuth2Service) //custom한 oauthservice연결 -> oAuth2User반환
-                .and().successHandler(successHandler)
-                .permitAll()
-
-                .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(customAuthenticationEntryPoint)//인증 과정에서 오류 발생
-                .accessDeniedHandler(customAccessDeniedHandler); //권한 확인 과정에서 예외 발생 시 전달
+                .accessDeniedHandler(customAccessDeniedHandler); //@preauthorized권한 확인 과정에서 예외 발생 시 전달
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(exceptionHandlerFilter, JwtAuthFilter.class);
