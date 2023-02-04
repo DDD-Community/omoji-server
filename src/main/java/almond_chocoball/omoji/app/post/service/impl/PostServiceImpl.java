@@ -39,6 +39,11 @@ public class PostServiceImpl implements PostService {
     private final PostDaoImpl postDao;
 
     @Override
+    public Post getPostById(Long id){
+        return postRepository.findById(id).orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
+    }
+
+    @Override
     public SimpleSuccessResponse uploadPost(Member member, PostRequestDto postRequestDto,
                                             List<MultipartFile> imgFileList) {
         checkImgsLen(imgFileList); //이미지 개수 확인

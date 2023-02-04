@@ -6,11 +6,14 @@ import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.post.dto.response.PostPagingResponseDto;
 import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
+import almond_chocoball.omoji.app.post.entity.Post;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface PostService {
+
+    Post getPostById(Long id);
 
     SimpleSuccessResponse uploadPost(Member member, PostRequestDto postRequestDto, List<MultipartFile> imgFileList);
 
