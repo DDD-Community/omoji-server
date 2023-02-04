@@ -7,6 +7,7 @@ import almond_chocoball.omoji.app.member.service.MemberService;
 import almond_chocoball.omoji.app.post.dto.request.PostPagingRequestDto;
 import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
 import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
+import almond_chocoball.omoji.app.post.dto.response.MyPostPagingResponseDto;
 import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
 import almond_chocoball.omoji.app.post.service.PostService;
 import io.swagger.annotations.ApiParam;
@@ -37,8 +38,9 @@ public class PostController {
     @Tag(name = "Post")
     @GetMapping("/{id}")
     @Operation(summary = "특정 id의 post 조회", description = "Post ID를 입력받아 세부 정보를 조회하는 API")
-    public ResponseEntity<DetailPostResponseDto> getPost(@PathVariable("id") Long id) {
-        return ApiResponse.success(postService.getPost(id));
+    public ResponseEntity<DetailPostResponseDto> getPost(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                         @PathVariable("id") Long id) {
+        return ApiResponse.success(postService.getPost(memberService.findMember(userDetails), id));
     }
 
     @Tag(name = "Post")
@@ -56,8 +58,8 @@ public class PostController {
     @Tag(name = "Post")
     @GetMapping("/profile") //내가 쓴 글만
     @Operation(summary = "start부터 limit까지 특정 user의 post 조회", description = "start부터 limit까지 특정 user의 post 조회 API")
-    public ResponseEntity<PostsResponseDto<List<DetailPostResponseDto>>> getMyPostsWithPaging(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                    PostPagingRequestDto pagingRequestDto) {
+    public ResponseEntity<PostsResponseDto<List<MyPostPagingResponseDto>>> getMyPostsWithPaging(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                                PostPagingRequestDto pagingRequestDto) {
         return ApiResponse.success(postService.getMyPostsWithPaging(
                 memberService.findMember(userDetails),
                 pagingRequestDto.getStart(), pagingRequestDto.getLimit()));

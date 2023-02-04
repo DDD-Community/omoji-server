@@ -20,6 +20,8 @@ public class DetailPostResponseDto {
     @NotNull
     private Long id;
 
+    private Boolean isOwner = false;
+
     @NotBlank
     private String title;
 

@@ -55,13 +55,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public DetailPostResponseDto getPost(Long id) {
+    public DetailPostResponseDto getPost(Member member, Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
 
         DetailPostResponseDto detailPostResponseDto = DetailPostResponseDto.of(post);
-        List<String> imgUrls = imgService.getImgUrls(post);
 
+        if (post.getMember().getId() == member.getId()) {
+            detailPostResponseDto.setIsOwner(true);
+        }
+
+        List<String> imgUrls = imgService.getImgUrls(post);
         detailPostResponseDto.setImgs(imgUrls);
 
         return detailPostResponseDto;
@@ -69,8 +73,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public PostsResponseDto<List<DetailPostResponseDto>> getMyPostsWithPaging(Member member,
-                                                                              int page, int size) {
+    public PostsResponseDto<List<MyPostPagingResponseDto>> getMyPostsWithPaging(Member member,
+                                                                                int page, int size) {
         Sort sort = sortByCreatedAt();
         Page<Post> allPosts = postRepository.findAllByMember(member, PageRequest.of(page, size, sort));
         List<MyPostPagingResponseDto> myPostPagingResponseDtoList = allPosts.getContent().stream().map(post -> {
