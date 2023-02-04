@@ -1,6 +1,8 @@
 package almond_chocoball.omoji.app.post.service.impl;
 
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
+import almond_chocoball.omoji.app.evaluate.enums.EvaluateEnum;
+import almond_chocoball.omoji.app.evaluate.service.EvaluateService;
 import almond_chocoball.omoji.app.hashtag.entity.HashtagPost;
 import almond_chocoball.omoji.app.hashtag.service.HashtagService;
 import almond_chocoball.omoji.app.img.service.ImgService;
@@ -35,6 +37,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final ImgService imgService;
     private final HashtagService hashtagService;
+    private final EvaluateService evaluateService;
 
     private final PostDaoImpl postDao;
 
@@ -69,6 +72,8 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
 
         DetailPostResponseDto detailPostResponseDto = DetailPostResponseDto.of(post);
+        detailPostResponseDto.setLikeCount(evaluateService.countRowByPost(post, EvaluateEnum.LIKE));
+        detailPostResponseDto.setDislikeCount(evaluateService.countRowByPost(post, EvaluateEnum.DISLIKE));
         List<String> imgUrls = imgService.getImgUrls(post);
 
         detailPostResponseDto.setImgs(imgUrls);
@@ -98,6 +103,8 @@ public class PostServiceImpl implements PostService {
         Page<Post> allPosts = postRepository.findAllByMember(member, PageRequest.of(page, size, sort));
         List<MyPostPagingResponseDto> myPostPagingResponseDtoList = allPosts.getContent().stream().map(post -> {
             MyPostPagingResponseDto myPostPagingResponseDto = MyPostPagingResponseDto.of(post);
+            myPostPagingResponseDto.setLikeCount(evaluateService.countRowByPost(post, EvaluateEnum.LIKE));
+            myPostPagingResponseDto.setDislikeCount(evaluateService.countRowByPost(post, EvaluateEnum.DISLIKE));
             myPostPagingResponseDto.setImgs(imgService.getImgUrls(post));
             return myPostPagingResponseDto;
         }).collect(Collectors.toList());

@@ -4,6 +4,7 @@ import almond_chocoball.omoji.app.evaluate.dto.request.EvaluateRequestDto;
 import almond_chocoball.omoji.app.evaluate.dto.response.EvaluatePostResponseDto;
 import almond_chocoball.omoji.app.evaluate.dto.response.EvaluateResponseDto;
 import almond_chocoball.omoji.app.evaluate.entity.Evaluate;
+import almond_chocoball.omoji.app.evaluate.enums.EvaluateEnum;
 import almond_chocoball.omoji.app.evaluate.repository.EvaluateRepository;
 import almond_chocoball.omoji.app.evaluate.service.EvaluateService;
 import almond_chocoball.omoji.app.img.service.ImgService;
@@ -62,5 +63,10 @@ public class EvaluateServiceImpl implements EvaluateService {
                 resultEvaluate.getPost(),
                 resultEvaluate.getEvaluateEnum()
         );
+    }
+
+    @Override
+    public int countRowByPost(Post post, EvaluateEnum evaluateEnum){
+        return evaluateRepository.countEvaluatesByPostAndEvaluateEnum(post,evaluateEnum);
     }
 }
