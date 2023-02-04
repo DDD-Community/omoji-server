@@ -4,33 +4,22 @@ import almond_chocoball.omoji.app.auth.enums.Role;
 import almond_chocoball.omoji.app.member.entity.Member;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @ToString
-public class CustomUserDetails implements UserDetails, OAuth2User { //권한을 담은 UserDetails
+public class CustomUserDetails implements UserDetails, AuthenticatedPrincipal { //권한을 담은 UserDetails
 
     private String socialId;
-    private String email;
     private String nickname;
-
     private Collection<? extends GrantedAuthority> authorities;
-    private Map<String, Object> attributes;
-
-    public CustomUserDetails(String socialId, String email, String nickname, Collection<? extends GrantedAuthority> authorities) {
-        this.socialId = socialId;
-        this.email = email;
-        this.nickname = nickname;
-        this.authorities = authorities;
-    }
 
     public CustomUserDetails(String socialId, String nickname, Collection<? extends GrantedAuthority> authorities) {
         this.socialId = socialId;
@@ -52,11 +41,6 @@ public class CustomUserDetails implements UserDetails, OAuth2User { //권한을 
         );
     }
 
-    public static CustomUserDetails create(Member member, Map<String, Object> attributes) {
-        CustomUserDetails userDetails = CustomUserDetails.create(member);
-        userDetails.setAttributes(attributes);
-        return userDetails;
-    }
 
     // UserDetail Override
     @Override
@@ -94,18 +78,9 @@ public class CustomUserDetails implements UserDetails, OAuth2User { //권한을 
         return true;
     }
 
-    // OAuth2User Override
     @Override
     public String getName() {
         return socialId;
     }
 
-    @Override
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
-    }
 }

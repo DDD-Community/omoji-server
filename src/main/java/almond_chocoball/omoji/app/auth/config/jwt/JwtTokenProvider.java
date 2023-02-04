@@ -48,13 +48,10 @@ public class JwtTokenProvider {
     }
 
     @Transactional
-    public Token generateToken(Authentication authentication) {
-
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-
-        String socialId = user.getSocialId();
-        String nickname = user.getNickname();
-        String role = authentication.getAuthorities().stream()
+    public Token generateToken(CustomUserDetails userDetails) {
+        String socialId = userDetails.getSocialId();
+        String nickname = userDetails.getNickname();
+        String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
         Date now = new Date();
@@ -76,15 +73,13 @@ public class JwtTokenProvider {
                         .signWith(SignatureAlgorithm.HS256, secretKey)
                         .compact());
 
-        saveRefreshToken(authentication, token.getRefreshToken());
+        saveRefreshToken(userDetails, token.getRefreshToken());
         return token;
     }
 
     @Transactional
-    private void saveRefreshToken(Authentication authentication, String refreshToken) {
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        String socialId = user.getName();
-
+    private void saveRefreshToken(CustomUserDetails userDetails, String refreshToken) {
+        String socialId = userDetails.getName();
         memberRepository.updateRefreshToken(socialId, refreshToken);
     }
 

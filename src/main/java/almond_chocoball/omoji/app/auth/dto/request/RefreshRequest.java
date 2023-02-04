@@ -1,4 +1,4 @@
-package almond_chocoball.omoji.app.auth.dto;
+package almond_chocoball.omoji.app.auth.dto.request;
 
 import lombok.*;
 
