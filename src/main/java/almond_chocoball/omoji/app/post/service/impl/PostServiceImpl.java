@@ -75,8 +75,6 @@ public class PostServiceImpl implements PostService {
         if (post.getMember().getId() == member.getId()) {
             detailPostResponseDto.setIsOwner(true);
         }
-
-        List<String> imgUrls = imgService.getImgUrls(post);
         detailPostResponseDto.setImgs(imgUrls);
 
         return detailPostResponseDto;
