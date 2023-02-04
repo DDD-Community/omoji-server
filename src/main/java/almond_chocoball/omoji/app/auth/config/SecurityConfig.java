@@ -27,8 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final ExceptionHandlerFilter exceptionHandlerFilter;
     private final JwtAuthFilter jwtAuthFilter;
 
-    private final HttpCookieOAuth2RequestRepository httpCookieOAuth2RequestRepository;
-
     @Override
     public void configure(WebSecurity webSecurity) { //스프링 시큐리티(httpSecurity인증,인가) 적용 전
         webSecurity.ignoring().antMatchers("/favicon.ico", "/docs/**", "/configuration/**",
