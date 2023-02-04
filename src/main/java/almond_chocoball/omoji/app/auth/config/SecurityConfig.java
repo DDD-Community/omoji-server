@@ -16,12 +16,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @RequiredArgsConstructor
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true,
+        prePostEnabled = true
+)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
     private final JwtAuthFilter jwtAuthFilter;
+
+    private final HttpCookieOAuth2RequestRepository httpCookieOAuth2RequestRepository;
 
     @Override
     public void configure(WebSecurity webSecurity) { //스프링 시큐리티(httpSecurity인증,인가) 적용 전

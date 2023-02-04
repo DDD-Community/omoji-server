@@ -39,8 +39,8 @@ public class JwtTokenProvider {
     private String secretKey;
 
     private static final String tokenPrefix = "Bearer";
-    private final long tokenPeriod = 1000L * 60L * 60L * 24L; //1일 후 만료
-    private final long refreshPeriod = 1000L * 60L * 60L * 24L * 30L; //30일
+    private final long tokenPeriod = 1000L * 60L * 60L * 24L * 30L; //30일
+    private final long refreshPeriod = 1000L * 60L * 60L * 24L * 90L; //30일
 
     @PostConstruct //의존성 주입 후 실행
     protected void init() { //secretKey를 BASE64 encoding
