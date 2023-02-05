@@ -9,14 +9,16 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 public class OAuthResponse extends Token {
+    private String nickname;
     private Boolean isNewUser;
     private Long userId;
 
-    public static OAuthResponse of(Token token, Boolean isNewUser, Long userId) { //Entity->Dto
-        OAuthResponse oAuthResponse = CustomObjectMapper.to(token, OAuthResponse.class);
-        oAuthResponse.isNewUser = isNewUser;
-        oAuthResponse.userId = userId;
-        return oAuthResponse;
+    public static OAuthResponse of(Token token, String nickname, Boolean isNewUser, Long userId) { //Entity->Dto
+        OAuthResponse authResponse = CustomObjectMapper.to(token, OAuthResponse.class);
+        authResponse.nickname = nickname;
+        authResponse.isNewUser = isNewUser;
+        authResponse.userId = userId;
+        return authResponse;
     }
 }
 

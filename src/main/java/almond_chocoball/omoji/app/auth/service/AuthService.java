@@ -5,14 +5,15 @@ import almond_chocoball.omoji.app.auth.config.jwt.JwtTokenProvider;
 import almond_chocoball.omoji.app.auth.config.jwt.JwtValidation;
 import almond_chocoball.omoji.app.auth.dto.CustomUserDetails;
 import almond_chocoball.omoji.app.auth.dto.OAuthAttributes;
-import almond_chocoball.omoji.app.auth.dto.response.OAuthResponse;
 import almond_chocoball.omoji.app.auth.dto.Token;
 import almond_chocoball.omoji.app.auth.dto.request.RefreshRequest;
+import almond_chocoball.omoji.app.auth.dto.response.OAuthResponse;
 import almond_chocoball.omoji.app.auth.enums.Role;
 import almond_chocoball.omoji.app.auth.enums.Social;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.member.repository.MemberRepository;
+import almond_chocoball.omoji.app.member.service.MemberService;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j
@@ -33,6 +33,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final JwtTokenProvider tokenProvider;
     private final JwtValidation jwtValidation;
     private final NaverClient naverClient;
@@ -74,14 +75,18 @@ public class AuthService {
         } else  { //회원가입
             member = attributes.toEntity(Role.USER);
             memberRepository.save(member); //없으면 새로 생성
-            isNewUser = true;
         }
+        String nickname = member.getNickname();
+        if (nickname == null) {
+            isNewUser = true;
+            nickname = attributes.getNickname();
+        }
+
         Long userId = member.getId();
 
         CustomUserDetails userDetails = CustomUserDetails.create(member);//UserDetails&&Principal 구현체 생성
         Token token = tokenProvider.generateToken(userDetails);
-
-        return OAuthResponse.of(token, isNewUser, userId);
+        return OAuthResponse.of(token, nickname, isNewUser, userId);
     }
 
     public Token refreshToken(RefreshRequest refreshRequest) { //access토큰 만료 시 클라가 요청
@@ -129,13 +134,18 @@ public class AuthService {
         return new SimpleSuccessResponse(null);
     }
 
-    @Transactional(readOnly = true)
-    public Long getMemberId(String socialId) {
 
-        Member member = memberRepository.findBysocialId(socialId)
-                .orElseThrow(()->{ throw new NoSuchElementException("User Not Found");});
-
-        return member.getId();
-
+    public SimpleSuccessResponse resign(HttpServletRequest request) { //refreshToken비움 & accessToken만료시킴(redis통해) & softdelete
+        final String accessToken = tokenProvider.resolveToken(request);
+        final String socialId = tokenProvider.getSocialId(accessToken);
+        Member member = memberService.findMember(socialId);
+//        Long expiration = tokenProvider.getExpiration(accessToken);
+//        redisTemplate.opsForValue() //JWT Expiration될 때까지 Redis에 저장 -> accessToken만료
+//                .set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
+        memberRepository.updateRefreshToken(socialId, null); //refreshToken 비움
+        memberRepository.delete(member);
+        return new SimpleSuccessResponse(null);
     }
+
+
 }

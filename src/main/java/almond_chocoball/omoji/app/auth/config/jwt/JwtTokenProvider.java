@@ -50,17 +50,14 @@ public class JwtTokenProvider {
     @Transactional
     public Token generateToken(CustomUserDetails userDetails) {
         String socialId = userDetails.getSocialId();
-        String nickname = userDetails.getNickname();
         String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
         Date now = new Date();
 
         Token token = new Token(
-                nickname,
                 Jwts.builder()
                         .setSubject(socialId)
-                        .claim("nickname", nickname)
                         .claim("role", role)
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + tokenPeriod))
@@ -90,9 +87,8 @@ public class JwtTokenProvider {
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get("role").toString().split(","))
                         .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        String nickname = claims.get("nickname", String.class);
 
-        CustomUserDetails principal = new CustomUserDetails(claims.getSubject(), nickname, authorities);
+        CustomUserDetails principal = new CustomUserDetails(claims.getSubject(), authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 

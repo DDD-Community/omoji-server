@@ -5,7 +5,8 @@ import almond_chocoball.omoji.app.member.dto.ProfileUpdateDto;
 import almond_chocoball.omoji.app.member.entity.Member;
 
 public interface MemberService {
-    public Member findMember(CustomUserDetails member);
+    Member findMember(CustomUserDetails member);
+    Member findMember(String socialId);
 
-    public ProfileUpdateDto updateProfile(CustomUserDetails member, String nickname);
+    ProfileUpdateDto updateProfile(CustomUserDetails member, String nickname);
 }
