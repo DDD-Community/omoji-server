@@ -7,6 +7,7 @@ import almond_chocoball.omoji.app.member.entity.Member;
 public interface MemberService {
     Member findMember(CustomUserDetails member);
     Member findMember(String socialId);
+    Member findMember(Long id);
 
     ProfileUpdateDto updateProfile(CustomUserDetails member, String nickname);
 }

@@ -16,7 +16,7 @@ public interface PostService {
 
     DetailPostResponseDto getPost(Member member, Long id);
 
-    PostsResponseDto<List<MyPostPagingResponseDto>> getMyPostsWithPaging(Member member, int start, int limit);
+    PostsResponseDto<List<MyPostPagingResponseDto>> getMemberPostsWithPaging(Member member, int start, int limit);
 
     SimpleSuccessResponse removeMyPost(Member member, Long id);
 
@@ -24,4 +24,6 @@ public interface PostService {
                                      List<MultipartFile> imgFileList);
 
     void removeMyAllPosts(Member member);
+
+    PostsResponseDto<List<MyPostPagingResponseDto>> getMemberPosts(Member member);
 }

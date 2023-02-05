@@ -15,6 +15,7 @@ import almond_chocoball.omoji.app.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,11 +74,24 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public PostsResponseDto<List<MyPostPagingResponseDto>> getMyPostsWithPaging(Member member,
+    public PostsResponseDto<List<MyPostPagingResponseDto>> getMemberPostsWithPaging(Member member,
                                                                                 int page, int size) {
         Sort sort = sortByCreatedAt();
         Page<Post> allPosts = postRepository.findAllByMember(member, PageRequest.of(page, size, sort));
         List<MyPostPagingResponseDto> myPostPagingResponseDtoList = allPosts.getContent().stream().map(post -> {
+            MyPostPagingResponseDto myPostPagingResponseDto = MyPostPagingResponseDto.of(post);
+            myPostPagingResponseDto.setImgs(imgService.getImgUrls(post));
+            return myPostPagingResponseDto;
+        }).collect(Collectors.toList());
+        return new PostsResponseDto(myPostPagingResponseDtoList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PostsResponseDto<List<MyPostPagingResponseDto>> getMemberPosts(Member member) {
+        Sort sort = sortByCreatedAt();
+        List<Post> allPosts = postRepository.findAllByMember(member, sort);
+        List<MyPostPagingResponseDto> myPostPagingResponseDtoList = allPosts.stream().map(post -> {
             MyPostPagingResponseDto myPostPagingResponseDto = MyPostPagingResponseDto.of(post);
             myPostPagingResponseDto.setImgs(imgService.getImgUrls(post));
             return myPostPagingResponseDto;
@@ -92,6 +106,14 @@ public class PostServiceImpl implements PostService {
         imgService.deleteImgs(post);
         postRepository.delete(post);
         return new SimpleSuccessResponse(id);
+    }
+
+    @Override
+    public void removeMyAllPosts(Member member) { //회원 탈퇴 시 모든 글 삭제
+        List<Post> posts = postRepository.findAllByMember(member);
+        imgService.deleteImgsByPosts(posts);
+        hashtagService.deleteAllByPosts(posts);
+        postRepository.deleteAllByMember(member);
     }
 
     @Override
@@ -113,13 +135,6 @@ public class PostServiceImpl implements PostService {
         return new SimpleSuccessResponse(findPost.getId());
     }
 
-    @Override
-    public void removeMyAllPosts(Member member) { //회원 탈퇴 시 모든 글 삭제
-        List<Post> posts = postRepository.findAllByMember(member);
-        imgService.deleteImgsByPosts(posts);
-        hashtagService.deleteAllByPosts(posts);
-        postRepository.deleteAllByMember(member);
-    }
 
     private Sort sortByCreatedAt() {
         return Sort.by(Sort.Direction.DESC, "createdAt");

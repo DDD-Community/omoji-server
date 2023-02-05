@@ -33,6 +33,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Member findMember(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User Not Found"));
+    }
+
+    @Override
     public ProfileUpdateDto updateProfile(CustomUserDetails member, String nickname) {
         Member findMember = findMember(member);
         findMember.setNickname(nickname);
