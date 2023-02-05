@@ -1,7 +1,8 @@
 package almond_chocoball.omoji.app.auth.controller;
 
-import almond_chocoball.omoji.app.auth.dto.request.RefreshRequest;
+import almond_chocoball.omoji.app.auth.dto.response.OAuthResponse;
 import almond_chocoball.omoji.app.auth.dto.Token;
+import almond_chocoball.omoji.app.auth.dto.request.RefreshRequest;
 import almond_chocoball.omoji.app.auth.enums.Social;
 import almond_chocoball.omoji.app.auth.service.AuthService;
 import almond_chocoball.omoji.app.common.dto.ApiResponse;
@@ -33,7 +34,7 @@ public class AuthController {
     @Tag(name = "Auth")
     @Operation(summary = "네이버 로그인", description = "Header에 socialToken(네이버 accessToken) 첨부-> 유저 정보 받고 앱의 토큰 반환")
     @PostMapping(value = "/naver")
-    public ResponseEntity<Token> naverLogin(HttpServletRequest request) {
+    public ResponseEntity<OAuthResponse> naverLogin(HttpServletRequest request) {
         final String socialToken = loginHeader(request);
         return ApiResponse.success(authService.login(Social.naver, socialToken));
     }

@@ -5,8 +5,9 @@ import almond_chocoball.omoji.app.auth.config.jwt.JwtTokenProvider;
 import almond_chocoball.omoji.app.auth.config.jwt.JwtValidation;
 import almond_chocoball.omoji.app.auth.dto.CustomUserDetails;
 import almond_chocoball.omoji.app.auth.dto.OAuthAttributes;
-import almond_chocoball.omoji.app.auth.dto.request.RefreshRequest;
+import almond_chocoball.omoji.app.auth.dto.response.OAuthResponse;
 import almond_chocoball.omoji.app.auth.dto.Token;
+import almond_chocoball.omoji.app.auth.dto.request.RefreshRequest;
 import almond_chocoball.omoji.app.auth.enums.Role;
 import almond_chocoball.omoji.app.auth.enums.Social;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
@@ -36,13 +37,9 @@ public class AuthService {
     private final JwtValidation jwtValidation;
     private final NaverClient naverClient;
 
-    public Token login(Social provider, String socialToken) {
+    public OAuthResponse login(Social provider, String socialToken) {
         OAuthAttributes oAuthAttributes = getUserProfile(provider, socialToken);
-
-        Member member = joinOrLogin(oAuthAttributes); //회원가입 혹은 로그인
-        CustomUserDetails userDetails = CustomUserDetails.create(member);//UserDetails&&Principal 구현체 생성
-
-        return tokenProvider.generateToken(userDetails);
+        return joinOrLogin(oAuthAttributes); //회원가입 혹은 로그인
     }
 
     private OAuthAttributes getUserProfile(Social provider, String socialToken) {
@@ -67,16 +64,24 @@ public class AuthService {
     }
 
     //회원가입 혹은 로그인
-    private Member joinOrLogin(OAuthAttributes attributes) {
+    private OAuthResponse joinOrLogin(OAuthAttributes attributes) {
         log.info("[saveOrUpdate] socialid: {}", attributes.getSocialId());
         Optional<Member> optionalMember = memberRepository.findBysocialId(attributes.getSocialId());
         Member member;
-        if (optionalMember.isPresent()) {
-            return optionalMember.get();
-        } else  {
+        Boolean isNewUser = false;
+        if (optionalMember.isPresent()) { //로그인
+            member = optionalMember.get();
+        } else  { //회원가입
             member = attributes.toEntity(Role.USER);
-            return memberRepository.save(member); //없으면 새로 생성
+            memberRepository.save(member); //없으면 새로 생성
+            isNewUser = true;
         }
+        Long userId = member.getId();
+
+        CustomUserDetails userDetails = CustomUserDetails.create(member);//UserDetails&&Principal 구현체 생성
+        Token token = tokenProvider.generateToken(userDetails);
+
+        return OAuthResponse.of(token, isNewUser, userId);
     }
 
     public Token refreshToken(RefreshRequest refreshRequest) { //access토큰 만료 시 클라가 요청
