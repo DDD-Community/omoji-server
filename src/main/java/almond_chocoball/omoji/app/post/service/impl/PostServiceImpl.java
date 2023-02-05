@@ -17,7 +17,6 @@ import almond_chocoball.omoji.app.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,6 +103,8 @@ public class PostServiceImpl implements PostService {
         List<Post> allPosts = postRepository.findAllByMember(member, sort);
         List<MyPostPagingResponseDto> myPostPagingResponseDtoList = allPosts.stream().map(post -> {
             MyPostPagingResponseDto myPostPagingResponseDto = MyPostPagingResponseDto.of(post);
+            myPostPagingResponseDto.setLikeCount(evaluateService.countRowByPost(post, EvaluateEnum.LIKE));
+            myPostPagingResponseDto.setDislikeCount(evaluateService.countRowByPost(post, EvaluateEnum.DISLIKE));
             myPostPagingResponseDto.setImgs(imgService.getImgUrls(post));
             return myPostPagingResponseDto;
         }).collect(Collectors.toList());
