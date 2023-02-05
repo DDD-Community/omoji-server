@@ -4,6 +4,8 @@ import almond_chocoball.omoji.app.common.entity.BaseTimeEntity;
 import almond_chocoball.omoji.app.hashtag.entity.HashtagPost;
 import almond_chocoball.omoji.app.member.entity.Member;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "is_deleted = false") //삭제하지 않은 post랑만 join 가능
+@SQLDelete(sql = "UPDATE post SET is_deleted = true WHERE id = ?")
 public class Post extends BaseTimeEntity {
 
     @Id
@@ -38,6 +42,8 @@ public class Post extends BaseTimeEntity {
     @ToString.Exclude
     private List<HashtagPost> hashtagPosts = new ArrayList<>();
 
+    @Column(columnDefinition="BOOLEAN DEFAULT false")
+    private Boolean isDeleted = false;
     /**
      *
      * 연관관계 메소드

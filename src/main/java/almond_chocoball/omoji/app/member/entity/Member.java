@@ -5,6 +5,8 @@ import almond_chocoball.omoji.app.auth.enums.Role;
 import almond_chocoball.omoji.app.auth.enums.Social;
 import almond_chocoball.omoji.app.common.entity.BaseTimeEntity;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -16,6 +18,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@Where(clause = "is_deleted = false") //탈퇴하지 않은 member랑만 join 가능
+@SQLDelete(sql = "UPDATE member SET is_deleted = true WHERE id = ?")
 public class Member extends BaseTimeEntity {
 
     @Id
@@ -28,7 +32,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String nickname;
 
     @Enumerated(EnumType.STRING)
@@ -48,5 +52,9 @@ public class Member extends BaseTimeEntity {
 
     @Column
     private String refreshToken;
+
+    @Column(columnDefinition="BOOLEAN DEFAULT false")
+    @Builder.Default
+    private Boolean isDeleted = false;
 
 }

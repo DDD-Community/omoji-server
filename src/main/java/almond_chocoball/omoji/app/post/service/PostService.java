@@ -22,4 +22,6 @@ public interface PostService {
 
     SimpleSuccessResponse updatePost(Member member, PostRequestDto postRequestDto,
                                      List<MultipartFile> imgFileList);
+
+    void removeMyAllPosts(Member member);
 }

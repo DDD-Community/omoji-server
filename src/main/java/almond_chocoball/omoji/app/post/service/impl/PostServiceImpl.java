@@ -113,6 +113,14 @@ public class PostServiceImpl implements PostService {
         return new SimpleSuccessResponse(findPost.getId());
     }
 
+    @Override
+    public void removeMyAllPosts(Member member) { //회원 탈퇴 시 모든 글 삭제
+        List<Post> posts = postRepository.findAllByMember(member);
+        imgService.deleteImgsByPosts(posts);
+        hashtagService.deleteAllByPosts(posts);
+        postRepository.deleteAllByMember(member);
+    }
+
     private Sort sortByCreatedAt() {
         return Sort.by(Sort.Direction.DESC, "createdAt");
     }
