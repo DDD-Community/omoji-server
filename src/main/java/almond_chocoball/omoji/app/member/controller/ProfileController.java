@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/profile")
 @RequiredArgsConstructor
-@Tag(name = "Profile", description = "user 정보 수정, 탈퇴")
+@Tag(name = "Profile", description = "user 정보 수정")
 public class ProfileController {
 
     private final MemberService memberService;

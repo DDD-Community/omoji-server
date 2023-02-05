@@ -26,13 +26,13 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@Tag(name = "OAuth", description = "로그인, 로그아웃, 토큰 갱신")
+@Tag(name = "OAuth", description = "로그인, 로그아웃, 탈퇴, 토큰 갱신")
 public class AuthController {
 
     private final AuthService authService;
     private final String tokenPrefix = "Bearer";
 
-    @Tag(name = "Auth")
+    @Tag(name = "OAuth")
     @Operation(summary = "네이버 로그인", description = "Header에 socialToken(네이버 accessToken) 첨부-> 유저 정보 받고 앱의 토큰 반환")
     @PostMapping(value = "/naver")
     public ResponseEntity<OAuthResponse> naverLogin(HttpServletRequest request) {
@@ -40,7 +40,7 @@ public class AuthController {
         return ApiResponse.success(authService.login(Social.naver, socialToken));
     }
 
-    @Tag(name = "Auth")
+    @Tag(name = "OAuth")
     @Operation(summary = "accessToken 갱신", description = "Header에 Access, Refresh 첨부")
     @PostMapping("/refresh")
     public ResponseEntity<Token> refreshToken(HttpServletRequest request) {
@@ -48,7 +48,7 @@ public class AuthController {
         return ApiResponse.success(authService.refreshToken(refreshHeader));
     }
 
-    @Tag(name = "Auth")
+    @Tag(name = "OAuth")
     @Operation(summary = "로그아웃", description = "Header에 Authorization 첨부: 해당 accessToken의 접근 막음")
     @PostMapping("/logout")
     @PreAuthorize("isAuthenticated()")
@@ -56,7 +56,7 @@ public class AuthController {
         return ApiResponse.success(authService.logout(request));
     }
 
-    @Tag(name = "Auth")
+    @Tag(name = "OAuth")
     @Operation(summary = "탈퇴", description = "Header에 Authorization 첨부")
     @DeleteMapping("/resign")
     @PreAuthorize("isAuthenticated()")
