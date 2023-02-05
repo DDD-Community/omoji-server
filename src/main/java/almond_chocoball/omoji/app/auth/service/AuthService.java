@@ -14,6 +14,7 @@ import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.member.repository.MemberRepository;
 import almond_chocoball.omoji.app.member.service.MemberService;
+import almond_chocoball.omoji.app.post.service.PostService;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ public class AuthService {
 
     private final MemberRepository memberRepository;
     private final MemberService memberService;
+    private final PostService postService;
     private final JwtTokenProvider tokenProvider;
     private final JwtValidation jwtValidation;
     private final NaverClient naverClient;
@@ -99,6 +101,8 @@ public class AuthService {
             throw new JwtException("JWT Expired");
         }
 
+        memberService.findMember(oldAccessToken); //존재하는 유저인지 확인
+
         //2. 유저 정보 얻기
 //        if (!tokenProvider.checkBlackList(oldAccessToken)) { //탈퇴/로그아웃한 유저
 //            throw new JwtException("Must SignUp or SignIn to Refresh AccessToken");
@@ -126,7 +130,7 @@ public class AuthService {
     public SimpleSuccessResponse logout(HttpServletRequest request) { //refreshToken비움 & accessToken만료시킴(redis통해)
         final String accessToken = tokenProvider.resolveToken(request);
         final String socialId = tokenProvider.getSocialId(accessToken);
-
+        memberService.findMember(socialId); //존재하는 유저인지 확인
 //        Long expiration = tokenProvider.getExpiration(accessToken);
 //        redisTemplate.opsForValue() //JWT Expiration될 때까지 Redis에 저장 -> accessToken만료
 //                .set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
@@ -143,6 +147,7 @@ public class AuthService {
 //        redisTemplate.opsForValue() //JWT Expiration될 때까지 Redis에 저장 -> accessToken만료
 //                .set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
         memberRepository.updateRefreshToken(socialId, null); //refreshToken 비움
+        postService.removeMyAllPosts(member);
         memberRepository.delete(member);
         return new SimpleSuccessResponse(null);
     }

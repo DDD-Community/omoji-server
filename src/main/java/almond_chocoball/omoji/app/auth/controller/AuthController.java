@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,6 +54,14 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<SimpleSuccessResponse> logout(HttpServletRequest request) {
         return ApiResponse.success(authService.logout(request));
+    }
+
+    @Tag(name = "Auth")
+    @Operation(summary = "탈퇴", description = "Header에 Authorization 첨부")
+    @DeleteMapping("/resign")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<SimpleSuccessResponse> resign(HttpServletRequest request) {
+        return ApiResponse.success(authService.resign(request));
     }
 
     //oauth accessToken을 전달받음

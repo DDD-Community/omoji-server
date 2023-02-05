@@ -16,7 +16,7 @@ public interface HashtagRepository extends JpaRepository<Hashtag, Long> {
     @Modifying(clearAutomatically=true, flushAutomatically=true) //bulk update 후 영속성 컨텍스트 비움
     @Query("DELETE FROM HashtagPost hp WHERE hp.post=:posts")
     void deleteAllByPost(@Param("post") Post post);
-    
+
     @Modifying(clearAutomatically=true, flushAutomatically=true) //bulk update 후 영속성 컨텍스트 비움
     @Query("DELETE FROM HashtagPost hp WHERE hp.post in :posts")
     void deleteAllByPosts(@Param("posts") List<Post> posts);
