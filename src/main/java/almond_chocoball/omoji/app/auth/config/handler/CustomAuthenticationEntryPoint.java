@@ -21,7 +21,13 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         ErrorResponse apiResponse= new ErrorResponse(e.getMessage());
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        String jwtExpired = "JWT Expired";
+        if (e.getMessage().equals(jwtExpired)) {
+            response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED); //417
+        }
+        else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
         response.setContentType("application/json;charset=UTF-8");
         var writer = response.getWriter();
         writer.println(objectMapper.writeValueAsString(apiResponse));

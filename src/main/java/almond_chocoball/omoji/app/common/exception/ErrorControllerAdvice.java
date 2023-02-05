@@ -35,6 +35,10 @@ public class ErrorControllerAdvice {
 
     @ExceptionHandler(value = JwtException.class)
     public ResponseEntity<ErrorResponse> handleJwtException(JwtException e) {
+        String jwtExpired = "JWT Expired";
+        if (e.getMessage().equals(jwtExpired)) {
+            return ApiResponse.expiredAuthentication(new ErrorResponse(e.getMessage())); //417
+        }
         return ApiResponse.unAuthorized(new ErrorResponse(e.getMessage()));
     }
 

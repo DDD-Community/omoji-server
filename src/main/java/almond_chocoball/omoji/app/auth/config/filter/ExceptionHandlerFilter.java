@@ -22,13 +22,19 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try{
             filterChain.doFilter(request,response);
         } catch (Exception e){
+            String jwtExpired = "JWT Expired";
+            if (e.getMessage().equals(jwtExpired)) {
+                response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED); //417
+            }
+            else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            }
             setExceptionResponse(response, new ErrorResponse(e.getMessage()));
         }
     }
 
     private void setExceptionResponse(HttpServletResponse response, ErrorResponse apiResponse) throws IOException {
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
         var writer = response.getWriter();
         writer.println(objectMapper.writeValueAsString(apiResponse));

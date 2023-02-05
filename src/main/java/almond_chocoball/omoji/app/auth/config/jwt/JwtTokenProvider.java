@@ -57,7 +57,6 @@ public class JwtTokenProvider {
         Date now = new Date();
 
         Token token = new Token(
-                tokenPrefix,
                 nickname,
                 Jwts.builder()
                         .setSubject(socialId)
@@ -86,7 +85,6 @@ public class JwtTokenProvider {
     //AccessToken 검사 정보로 Authentication 객체 생성
     public Authentication getAuthentication(String accessToken) { //filter에서 인증 성공 시 SecurityContext에 저장할 Authentication 생성
         Claims claims = jwtValidation.parseClaims(accessToken);
-
         if (claims.get("role") == null) { throw new JwtException("AccessToken Parse Failed"); } //access대신 refresh 넣었을 때 대비
 
         Collection<? extends GrantedAuthority> authorities =
