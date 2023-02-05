@@ -1,6 +1,7 @@
 package almond_chocoball.omoji.app.member.service.impl;
 
 import almond_chocoball.omoji.app.auth.dto.CustomUserDetails;
+import almond_chocoball.omoji.app.member.dto.ProfileUpdateDto;
 import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.member.repository.MemberRepository;
 import almond_chocoball.omoji.app.member.service.MemberService;
@@ -21,5 +22,13 @@ public class MemberServiceImpl implements MemberService {
     public Member findMember(CustomUserDetails member) {
         return memberRepository.findBysocialId(member.getSocialId())
                 .orElseThrow(() -> new NoSuchElementException("User Not Found"));
+    }
+
+    @Override
+    @Transactional
+    public ProfileUpdateDto updateProfile(CustomUserDetails member, String nickname) {
+        Member findMember = findMember(member);
+        findMember.setNickname(nickname);
+        return ProfileUpdateDto.of(findMember);
     }
 }
