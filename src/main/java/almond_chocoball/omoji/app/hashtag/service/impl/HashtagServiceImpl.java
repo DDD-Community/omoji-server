@@ -4,6 +4,7 @@ import almond_chocoball.omoji.app.hashtag.entity.Hashtag;
 import almond_chocoball.omoji.app.hashtag.entity.HashtagPost;
 import almond_chocoball.omoji.app.hashtag.repository.HashtagRepository;
 import almond_chocoball.omoji.app.hashtag.service.HashtagService;
+import almond_chocoball.omoji.app.post.entity.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,4 +28,16 @@ public class HashtagServiceImpl implements HashtagService {
                 .collect(Collectors.toList());
         return HashtagPost.createHashtagPost(hashtags);
     }
+
+    @Override
+    public void deleteAllByPost(Post post) {
+        hashtagRepository.deleteAllByPost(post);
+    }
+
+    @Override
+    public void deleteAllByPosts(List<Post> posts) {
+        hashtagRepository.deleteAllByPosts(posts);
+    }
+
+
 }

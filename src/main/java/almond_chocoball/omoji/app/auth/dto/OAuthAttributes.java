@@ -53,7 +53,7 @@ public class OAuthAttributes { //provider마다 제공해주는 정보 형태가
         return Member.builder()
                 .socialId(socialId)
                 .social(social)
-                .nickname(nickname)
+                .nickname(null)
                 .email(email)
                 .gender(gender)
                 .birthyear(birthyear)

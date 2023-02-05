@@ -27,6 +27,11 @@ public class ApiResponse<T> {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
     }
 
+    public static <T> ResponseEntity<T> expiredAuthentication(T body) { //417
+        return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(body);
+    }
+
+
     public static <T> ResponseEntity<T> notFound(T body) { //404
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }

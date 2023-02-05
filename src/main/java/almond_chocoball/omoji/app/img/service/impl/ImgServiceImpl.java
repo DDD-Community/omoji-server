@@ -62,6 +62,11 @@ public class ImgServiceImpl implements ImgService {
         imgRepository.deleteAllByPost(post);
     }
 
+    @Override
+    public void deleteImgsByPosts(List<Post> posts) {
+        imgRepository.deleteAllByPosts(posts);
+    }
+
 
     @Override
     public void updateImg(Post post, List<MultipartFile> imgFileList) {

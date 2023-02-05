@@ -1,7 +1,8 @@
 package almond_chocoball.omoji.app.auth.controller;
 
-import almond_chocoball.omoji.app.auth.dto.request.RefreshRequest;
+import almond_chocoball.omoji.app.auth.dto.response.OAuthResponse;
 import almond_chocoball.omoji.app.auth.dto.Token;
+import almond_chocoball.omoji.app.auth.dto.request.RefreshRequest;
 import almond_chocoball.omoji.app.auth.enums.Social;
 import almond_chocoball.omoji.app.auth.service.AuthService;
 import almond_chocoball.omoji.app.common.dto.ApiResponse;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +35,7 @@ public class AuthController {
     @Tag(name = "Auth")
     @Operation(summary = "네이버 로그인", description = "Header에 socialToken(네이버 accessToken) 첨부-> 유저 정보 받고 앱의 토큰 반환")
     @PostMapping(value = "/naver")
-    public ResponseEntity<Token> naverLogin(HttpServletRequest request) {
+    public ResponseEntity<OAuthResponse> naverLogin(HttpServletRequest request) {
         final String socialToken = loginHeader(request);
         return ApiResponse.success(authService.login(Social.naver, socialToken));
     }
@@ -52,6 +54,14 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<SimpleSuccessResponse> logout(HttpServletRequest request) {
         return ApiResponse.success(authService.logout(request));
+    }
+
+    @Tag(name = "Auth")
+    @Operation(summary = "탈퇴", description = "Header에 Authorization 첨부")
+    @DeleteMapping("/resign")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<SimpleSuccessResponse> resign(HttpServletRequest request) {
+        return ApiResponse.success(authService.resign(request));
     }
 
     //oauth accessToken을 전달받음

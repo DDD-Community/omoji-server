@@ -50,18 +50,14 @@ public class JwtTokenProvider {
     @Transactional
     public Token generateToken(CustomUserDetails userDetails) {
         String socialId = userDetails.getSocialId();
-        String nickname = userDetails.getNickname();
         String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
         Date now = new Date();
 
         Token token = new Token(
-                tokenPrefix,
-                nickname,
                 Jwts.builder()
                         .setSubject(socialId)
-                        .claim("nickname", nickname)
                         .claim("role", role)
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + tokenPeriod))
@@ -86,15 +82,13 @@ public class JwtTokenProvider {
     //AccessToken 검사 정보로 Authentication 객체 생성
     public Authentication getAuthentication(String accessToken) { //filter에서 인증 성공 시 SecurityContext에 저장할 Authentication 생성
         Claims claims = jwtValidation.parseClaims(accessToken);
-
         if (claims.get("role") == null) { throw new JwtException("AccessToken Parse Failed"); } //access대신 refresh 넣었을 때 대비
 
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get("role").toString().split(","))
                         .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        String nickname = claims.get("nickname", String.class);
 
-        CustomUserDetails principal = new CustomUserDetails(claims.getSubject(), nickname, authorities);
+        CustomUserDetails principal = new CustomUserDetails(claims.getSubject(), authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 

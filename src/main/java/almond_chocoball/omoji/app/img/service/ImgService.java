@@ -13,5 +13,7 @@ public interface ImgService {
 
     void deleteImgs(Post post);
 
+    void deleteImgsByPosts(List<Post> posts);
+
     void updateImg(Post post, List<MultipartFile> imgFileList);
 }

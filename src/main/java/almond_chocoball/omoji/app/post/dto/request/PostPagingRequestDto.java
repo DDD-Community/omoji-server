@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostPagingRequestDto {
+    private Long userId;
     private int start;
     private int limit;
 }

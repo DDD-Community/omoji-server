@@ -18,12 +18,10 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails, AuthenticatedPrincipal { //권한을 담은 UserDetails
 
     private String socialId;
-    private String nickname;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(String socialId, String nickname, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(String socialId, Collection<? extends GrantedAuthority> authorities) {
         this.socialId = socialId;
-        this.nickname = nickname;
         this.authorities = authorities;
     }
 
@@ -36,7 +34,6 @@ public class CustomUserDetails implements UserDetails, AuthenticatedPrincipal { 
 
         return new CustomUserDetails(
                 member.getSocialId(),
-                member.getNickname(),
                 authorities
         );
     }

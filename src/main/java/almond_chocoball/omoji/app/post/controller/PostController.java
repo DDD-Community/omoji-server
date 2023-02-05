@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,13 +57,19 @@ public class PostController {
     }
 
     @Tag(name = "Post")
-    @GetMapping("/profile") //내가 쓴 글만
+    @GetMapping()
     @Operation(summary = "start부터 limit까지 특정 user의 post 조회", description = "start부터 limit까지 특정 user의 post 조회 API")
-    public ResponseEntity<PostsResponseDto<List<MyPostPagingResponseDto>>> getMyPostsWithPaging(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                                                PostPagingRequestDto pagingRequestDto) {
-        return ApiResponse.success(postService.getMyPostsWithPaging(
-                memberService.findMember(userDetails),
+    public ResponseEntity<PostsResponseDto<List<MyPostPagingResponseDto>>> getMemberPostsWithPaging(PostPagingRequestDto pagingRequestDto) {
+        return ApiResponse.success(postService.getMemberPostsWithPaging(
+                memberService.findMember(pagingRequestDto.getUserId()),
                 pagingRequestDto.getStart(), pagingRequestDto.getLimit()));
+    }
+
+    @Tag(name = "Post")
+    @GetMapping("/all")
+    @Operation(summary = "특정 user의 post 전체 조회", description = "특정 user의 post 조회 API")
+    public ResponseEntity<PostsResponseDto<List<MyPostPagingResponseDto>>> getMemberPosts(@Param("userId") Long userId) {
+        return ApiResponse.success(postService.getMemberPosts(memberService.findMember(userId)));
     }
 
     @Tag(name = "Post")
