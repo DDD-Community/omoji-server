@@ -4,12 +4,15 @@ application:
   title: omoji
 
 spring:
+  datasource:
+    schema: schema-postgres.sql
+    data: data-postgres.sql
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
   sql:
     init:
-      mode: always
+#      mode: always //한 번 hashtag 생성 후엔 다시 하지마라
       platform: postgres
   jpa:
     open-in-view: false
@@ -17,8 +20,8 @@ spring:
     hibernate:
       default_batch_fetch_size: 100
       dialect: org.hibernate.dialect.PostgreSQLDialect
-      ddl-auto: update
-      defer-datasource-initialization: true
+      datasource:
+          initialization: true
     show-sql: true
     properties:
       hibernate:
@@ -32,7 +35,7 @@ spring:
     activate:
       on-profile: local
     import: application-oauth.yml
-  jpa.hibernate.ddl-auto: update
+  jpa.hibernate.ddl-auto: none
 logging:
   level:
     root: info
@@ -53,7 +56,7 @@ spring:
   config:
     activate:
       on-profile: prod
-    jpa.hibernate.ddl-auto: update
+    jpa.hibernate.ddl-auto: none
     import: application-oauth.yml
 server:
   port: 9090

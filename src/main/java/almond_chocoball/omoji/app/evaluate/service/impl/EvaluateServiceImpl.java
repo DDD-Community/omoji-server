@@ -64,7 +64,6 @@ public class EvaluateServiceImpl implements EvaluateService {
 
         return new EvaluateResponseDto(
                 resultEvaluate.getId(),
-                resultEvaluate.getMember(),
                 resultEvaluate.getPost(),
                 resultEvaluate.getEvaluateEnum()
         );
