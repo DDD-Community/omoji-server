@@ -51,7 +51,7 @@ spring:
   config:
     activate:
       on-profile: prod
-    jpa.hibernate.ddl-auto: update
+    jpa.hibernate.ddl-auto: create
     import: application-oauth.yml
 server:
   port: 9090

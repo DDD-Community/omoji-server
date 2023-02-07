@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
-@Profile("prod")
+// @Profile("prod")
 @Component
 @RequiredArgsConstructor
 public class initHashtagDb {
