@@ -16,7 +16,7 @@ spring:
     hibernate:
       default_batch_fetch_size: 100
       dialect: org.hibernate.dialect.PostgreSQLDialect
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -51,7 +51,7 @@ spring:
   config:
     activate:
       on-profile: prod
-    jpa.hibernate.ddl-auto: update
+    jpa.hibernate.ddl-auto: create-drop
     import: application-oauth.yml
 server:
   port: 9090
