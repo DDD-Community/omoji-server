@@ -53,9 +53,6 @@ spring:
       on-profile: prod
     jpa.hibernate.ddl-auto: update
     import: application-oauth.yml
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
 server:
   port: 9090
 logging:
