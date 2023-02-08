@@ -20,8 +20,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByMember(Member member, Sort sort);
     List<Post> findAllByMember(Member member);
 
-    Page<Post> findAllByMemberNot(Member member, Pageable pageable);
-
     Optional<Post> findByIdAndMember(Long id, Member member);
 
     @Modifying(clearAutomatically=true, flushAutomatically=true) //bulk update 후 영속성 컨텍스트 비움
