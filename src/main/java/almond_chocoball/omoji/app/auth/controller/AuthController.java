@@ -1,8 +1,9 @@
 package almond_chocoball.omoji.app.auth.controller;
 
-import almond_chocoball.omoji.app.auth.dto.response.OAuthResponse;
 import almond_chocoball.omoji.app.auth.dto.Token;
 import almond_chocoball.omoji.app.auth.dto.request.RefreshRequest;
+import almond_chocoball.omoji.app.auth.dto.request.ResignRequest;
+import almond_chocoball.omoji.app.auth.dto.response.OAuthResponse;
 import almond_chocoball.omoji.app.auth.enums.Social;
 import almond_chocoball.omoji.app.auth.service.AuthService;
 import almond_chocoball.omoji.app.common.dto.ApiResponse;
@@ -15,8 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,10 +59,11 @@ public class AuthController {
 
     @Tag(name = "OAuth")
     @Operation(summary = "탈퇴", description = "Header에 Authorization 첨부")
-    @DeleteMapping("/resign")
+    @PostMapping("/resign")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<SimpleSuccessResponse> resign(HttpServletRequest request) {
-        return ApiResponse.success(authService.resign(request));
+    public ResponseEntity<SimpleSuccessResponse> resign(HttpServletRequest request,
+                                                        @RequestBody ResignRequest resignRequest) {
+        return ApiResponse.success(authService.resign(request, resignRequest.getReason()));
     }
 
     //oauth accessToken을 전달받음
