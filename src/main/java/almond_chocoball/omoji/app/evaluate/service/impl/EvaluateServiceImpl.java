@@ -64,7 +64,8 @@ public class EvaluateServiceImpl implements EvaluateService {
 
         return new EvaluateResponseDto(
                 resultEvaluate.getId(),
-                resultEvaluate.getPost(),
+                countRowByPost(post, EvaluateEnum.LIKE),
+                countRowByPost(post, EvaluateEnum.DISLIKE),
                 resultEvaluate.getEvaluateEnum()
         );
     }

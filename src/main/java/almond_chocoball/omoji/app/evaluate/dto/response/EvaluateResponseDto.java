@@ -1,7 +1,6 @@
 package almond_chocoball.omoji.app.evaluate.dto.response;
 
 import almond_chocoball.omoji.app.evaluate.enums.EvaluateEnum;
-import almond_chocoball.omoji.app.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -14,7 +13,10 @@ public class EvaluateResponseDto {
     private Long id;
 
     @NotNull
-    private Post post;
+    private int likeCount;
+
+    @NotNull
+    private int dislikeCount;
 
     @NotNull
     private EvaluateEnum evaluateEnum;

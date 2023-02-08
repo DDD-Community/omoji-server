@@ -4,12 +4,8 @@ import almond_chocoball.omoji.app.comment.dto.request.CommentRequestDto;
 import almond_chocoball.omoji.app.comment.dto.response.CommentResponseDto;
 import almond_chocoball.omoji.app.comment.entity.Comment;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
-import almond_chocoball.omoji.app.evaluate.dto.request.EvaluateRequestDto;
-import almond_chocoball.omoji.app.evaluate.dto.response.EvaluatePostResponseDto;
-import almond_chocoball.omoji.app.evaluate.dto.response.EvaluateResponseDto;
 import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.post.entity.Post;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 

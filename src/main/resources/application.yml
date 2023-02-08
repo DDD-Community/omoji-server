@@ -22,7 +22,6 @@ spring:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       datasource:
           initialization: true
-    show-sql: true
     properties:
       hibernate:
         format_sql: true
