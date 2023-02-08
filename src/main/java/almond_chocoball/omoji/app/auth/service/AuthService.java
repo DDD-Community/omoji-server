@@ -12,7 +12,9 @@ import almond_chocoball.omoji.app.auth.enums.Role;
 import almond_chocoball.omoji.app.auth.enums.Social;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.member.entity.Member;
+import almond_chocoball.omoji.app.member.entity.Resign;
 import almond_chocoball.omoji.app.member.repository.MemberRepository;
+import almond_chocoball.omoji.app.member.repository.ResignRepository;
 import almond_chocoball.omoji.app.member.service.MemberService;
 import almond_chocoball.omoji.app.post.service.PostService;
 import io.jsonwebtoken.JwtException;
@@ -34,6 +36,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final MemberRepository memberRepository;
+    private final ResignRepository resignRepository;
     private final MemberService memberService;
     private final PostService postService;
     private final JwtTokenProvider tokenProvider;
@@ -139,7 +142,7 @@ public class AuthService {
     }
 
 
-    public SimpleSuccessResponse resign(HttpServletRequest request) { //refreshToken비움 & accessToken만료시킴(redis통해) & softdelete
+    public SimpleSuccessResponse resign(HttpServletRequest request, String reason) { //refreshToken비움 & accessToken만료시킴(redis통해) & softdelete
         final String accessToken = tokenProvider.resolveToken(request);
         final String socialId = tokenProvider.getSocialId(accessToken);
         Member member = memberService.findMember(socialId);
@@ -148,6 +151,7 @@ public class AuthService {
 //                .set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
         memberRepository.updateRefreshToken(socialId, null); //refreshToken 비움
         postService.removeMyAllPosts(member);
+        resignRepository.save(Resign.builder().reason(reason).member(member).build());
         memberRepository.delete(member);
         return new SimpleSuccessResponse(null);
     }
