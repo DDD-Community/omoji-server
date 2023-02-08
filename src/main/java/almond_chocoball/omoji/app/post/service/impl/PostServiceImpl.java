@@ -52,10 +52,15 @@ public class PostServiceImpl implements PostService {
         List<HashtagPost> hashtagPosts = new ArrayList<>();
 
         List<HashtagPost> eventStyles = hashtagService.getEventStyleHashtagPosts(postRequestDto);
-        HashtagPost location = hashtagService.getLocationHashtagPost(postRequestDto.getLocation());
-
         hashtagPosts.addAll(eventStyles);
-        hashtagPosts.add(location);
+
+//        if (!postRequestDto.getLocation().equals("")
+//                || !postRequestDto.getLocation().isEmpty()
+//                || !postRequestDto.getLocation().isBlank()
+//        ) {
+//            HashtagPost location = hashtagService.getLocationHashtagPost(postRequestDto.getLocation());
+//            hashtagPosts.add(location);
+//        }
 
         Post post = postRequestDto.toPost(member, hashtagPosts);
 
