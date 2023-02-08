@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -34,17 +33,17 @@ public class HashtagServiceImpl implements HashtagService {
 
     @Override
     public List<HashtagPost> getEventStyleHashtagPosts(PostRequestDto postRequestDto) {
-        Stream<Hashtag> events = postRequestDto.getEvents().stream()
+        List<Hashtag> events = postRequestDto.getEvents().stream()
                 .map(hashtagName -> hashtagRepository.findByNameAndParentId(hashtagName, HashtagEnum.EVENT.getValue())
-                        .orElseThrow(() -> new NoSuchElementException("존재하는 Hashtag에서 선택해주십시오.")));
+                        .orElseThrow(() -> new NoSuchElementException("존재하는 Hashtag에서 선택해주십시오."))).collect(Collectors.toList());
 
-        Stream<Hashtag> styles = postRequestDto.getStyles().stream()
+        List<Hashtag> styles = postRequestDto.getStyles().stream()
                 .map(hashtagName -> hashtagRepository.findByNameAndParentId(hashtagName, HashtagEnum.STYLE.getValue())
-                        .orElseThrow(()->new NoSuchElementException("존재하는 Hashtag에서 선택해주십시오.")));
+                        .orElseThrow(()->new NoSuchElementException("존재하는 Hashtag에서 선택해주십시오."))).collect(Collectors.toList());
 
-        List<Hashtag> hashtags = Stream.concat(events, styles).collect(Collectors.toList());
+        events.addAll(styles);
 
-        return HashtagPost.createHashtagPosts(hashtags);
+        return HashtagPost.createHashtagPosts(events);
     }
 
     @Override
