@@ -1,7 +1,6 @@
 package almond_chocoball.omoji.app.auth.dto.response;
 
 import almond_chocoball.omoji.app.auth.dto.Token;
-import almond_chocoball.omoji.app.common.utils.CustomObjectMapper;
 import lombok.*;
 
 @ToString
@@ -14,7 +13,7 @@ public class OAuthResponse extends Token {
     private Long userId;
 
     public static OAuthResponse of(Token token, String nickname, Boolean isNewUser, Long userId) { //Entity->Dto
-        OAuthResponse authResponse = CustomObjectMapper.to(token, OAuthResponse.class);
+        OAuthResponse authResponse = (OAuthResponse) token;
         authResponse.nickname = nickname;
         authResponse.isNewUser = isNewUser;
         authResponse.userId = userId;
