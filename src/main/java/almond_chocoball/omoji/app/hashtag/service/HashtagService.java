@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface HashtagService {
 
-    List<HashtagPost> getHashtagPosts(List<String> hashtagNames);
-
     List<HashtagPost> getEventStyleHashtagPosts(PostRequestDto postRequestDto);
 
     HashtagPost getLocationHashtagPost(String hashtagName);

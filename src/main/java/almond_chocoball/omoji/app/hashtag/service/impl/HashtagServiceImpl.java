@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,23 +22,13 @@ public class HashtagServiceImpl implements HashtagService {
     private final HashtagRepository hashtagRepository;
 
     @Override
-    public List<HashtagPost> getHashtagPosts(List<String> hashtagNames) {
-        List<Hashtag> hashtags = hashtagNames.stream()
-                .map(hashtagName -> hashtagRepository.findByName(hashtagName)
-                        .orElseThrow(()->new NoSuchElementException("존재하는 Hashtag에서 선택해주십시오.")))
-                .collect(Collectors.toList());
-        return HashtagPost.createHashtagPosts(hashtags);
-    }
-
-    @Override
     public List<HashtagPost> getEventStyleHashtagPosts(PostRequestDto postRequestDto) {
-        List<Hashtag> events = postRequestDto.getEvents().stream()
-                .map(hashtagName -> hashtagRepository.findByNameAndParentId(hashtagName, HashtagEnum.EVENT.getValue())
-                        .orElseThrow(() -> new NoSuchElementException("존재하는 Hashtag에서 선택해주십시오."))).collect(Collectors.toList());
-
-        List<Hashtag> styles = postRequestDto.getStyles().stream()
-                .map(hashtagName -> hashtagRepository.findByNameAndParentId(hashtagName, HashtagEnum.STYLE.getValue())
-                        .orElseThrow(()->new NoSuchElementException("존재하는 Hashtag에서 선택해주십시오."))).collect(Collectors.toList());
+        List<Hashtag> events = hashtagRepository.findHashtagsWithParentIdAndNames(
+                HashtagEnum.EVENT.getValue(),
+                postRequestDto.getEvents().stream().collect(Collectors.toList()));
+        List<Hashtag> styles = hashtagRepository.findHashtagsWithParentIdAndNames(
+                HashtagEnum.STYLE.getValue(),
+                postRequestDto.getEvents().stream().collect(Collectors.toList()));
 
         events.addAll(styles);
 
@@ -60,7 +49,6 @@ public class HashtagServiceImpl implements HashtagService {
 
         return HashtagPost.createHashtagPost(hashtag);
     }
-
 
     @Override
     @Transactional
