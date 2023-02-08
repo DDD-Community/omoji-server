@@ -7,8 +7,6 @@ import almond_chocoball.omoji.app.evaluate.dto.response.EvaluatePostResponseDto;
 import almond_chocoball.omoji.app.evaluate.dto.response.EvaluateResponseDto;
 import almond_chocoball.omoji.app.evaluate.service.EvaluateService;
 import almond_chocoball.omoji.app.member.service.MemberService;
-import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
-import almond_chocoball.omoji.app.post.entity.Post;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

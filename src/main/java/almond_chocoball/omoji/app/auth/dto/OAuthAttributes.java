@@ -5,16 +5,14 @@ import almond_chocoball.omoji.app.auth.enums.Role;
 import almond_chocoball.omoji.app.auth.enums.Social;
 import almond_chocoball.omoji.app.member.entity.Member;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
-@ToString
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
 @Builder
-@Slf4j
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OAuthAttributes { //provider마다 제공해주는 정보 형태가 다르기 때문에 분기 정리 클래스
     private Map<String, Object> attributes;
     private String socialId;
@@ -31,7 +29,7 @@ public class OAuthAttributes { //provider마다 제공해주는 정보 형태가
             case naver:
                 return ofNaver(attributes);
             default:
-                throw new RuntimeException();
+                throw new RuntimeException("OAuthAttributes 생성에 실패했습니다.");
         }
     }
 

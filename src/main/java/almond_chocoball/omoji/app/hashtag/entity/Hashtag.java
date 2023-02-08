@@ -5,13 +5,11 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
+@Getter @Setter
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Hashtag {
 
@@ -35,18 +33,17 @@ public class Hashtag {
 
     //==연관관계 메서드==양방향일 때//
     public void addChildrenHashtag(Hashtag... child) {
-        Arrays.stream(child).forEach(c ->
-            {
-                this.child.add(c);
-                c.setParent(this);
-            });
+        for (Hashtag c : child) {
+            this.child.add(c);
+            c.setParent(this);
+        }
     }
+
     public static Hashtag createHashtag(String name){
         Hashtag hashtag = new Hashtag();
         hashtag.setName(name);
         return hashtag;
     }
-
 
     public static Hashtag createHashtagWithParent(String name, Hashtag parent){
         Hashtag hashtag = new Hashtag();

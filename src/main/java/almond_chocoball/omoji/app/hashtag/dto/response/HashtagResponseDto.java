@@ -1,9 +1,7 @@
 package almond_chocoball.omoji.app.hashtag.dto.response;
 
 import almond_chocoball.omoji.app.hashtag.entity.HashtagPost;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor

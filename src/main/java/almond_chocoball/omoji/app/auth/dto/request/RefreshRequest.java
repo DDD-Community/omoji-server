@@ -5,9 +5,9 @@ import lombok.*;
 import javax.validation.constraints.NotNull;
 
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 public class RefreshRequest {
 
     @NotNull

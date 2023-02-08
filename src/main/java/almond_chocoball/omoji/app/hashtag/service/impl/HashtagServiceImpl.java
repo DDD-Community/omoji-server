@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class HashtagServiceImpl implements HashtagService {
 
@@ -47,6 +47,7 @@ public class HashtagServiceImpl implements HashtagService {
     }
 
     @Override
+    @Transactional
     public HashtagPost getLocationHashtagPost(String hashtagName) {
         Hashtag hashtag = hashtagRepository.findByNameAndParentId(hashtagName, HashtagEnum.LOCATION.getValue())
                 .orElseGet(() -> {
@@ -62,9 +63,9 @@ public class HashtagServiceImpl implements HashtagService {
 
 
     @Override
+    @Transactional
     public void deleteAllByPosts(List<Post> posts) {
         hashtagRepository.deleteAllByPosts(posts);
     }
-
 
 }

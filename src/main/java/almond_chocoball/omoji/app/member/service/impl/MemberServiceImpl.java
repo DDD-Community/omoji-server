@@ -12,34 +12,32 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.NoSuchElementException;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public Member findMember(CustomUserDetails member) {
         return memberRepository.findBysocialId(member.getSocialId())
                 .orElseThrow(() -> new NoSuchElementException("User Not Found"));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Member findMember(String socialId) {
         return memberRepository.findBysocialId(socialId)
                 .orElseThrow(() -> new NoSuchElementException("User Not Found"));
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Member findMember(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User Not Found"));
     }
 
     @Override
+    @Transactional
     public ProfileUpdateDto updateProfile(CustomUserDetails member, String nickname) {
         Member findMember = findMember(member);
         findMember.setNickname(nickname);

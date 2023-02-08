@@ -4,7 +4,7 @@ import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
 import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
-import almond_chocoball.omoji.app.post.dto.response.MyPostPagingResponseDto;
+import almond_chocoball.omoji.app.post.dto.response.PostPagingResponseDto;
 import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
 import almond_chocoball.omoji.app.post.entity.Post;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +19,7 @@ public interface PostService {
 
     DetailPostResponseDto getPost(Member member, Long id);
 
-    PostsResponseDto<List<MyPostPagingResponseDto>> getMemberPostsWithPaging(Member member, int start, int limit);
+    PostsResponseDto<List<PostPagingResponseDto>> getMemberPostsWithPaging(Member member, int start, int limit);
 
     SimpleSuccessResponse removeMyPost(Member member, Long id);
 
@@ -28,5 +28,5 @@ public interface PostService {
 
     void removeMyAllPosts(Member member);
 
-    PostsResponseDto<List<MyPostPagingResponseDto>> getMemberPosts(Member member);
+    PostsResponseDto<List<PostPagingResponseDto>> getMemberPosts(Member member);
 }
