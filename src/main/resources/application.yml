@@ -28,7 +28,7 @@ spring:
     activate:
       on-profile: local
     import: application-oauth.yml
-  jpa.hibernate.ddl-auto: update
+  jpa.hibernate.ddl-auto: create-drop
 logging:
   level:
     root: info
