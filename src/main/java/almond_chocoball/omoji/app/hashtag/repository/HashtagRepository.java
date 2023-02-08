@@ -13,9 +13,7 @@ import java.util.Optional;
 public interface HashtagRepository extends JpaRepository<Hashtag, Long> {
     Optional<Hashtag> findByName(String hashtagName);
 
-    @Modifying(clearAutomatically=true, flushAutomatically=true) //bulk update 후 영속성 컨텍스트 비움
-    @Query("DELETE FROM HashtagPost hp WHERE hp.post=:posts")
-    void deleteAllByPost(@Param("post") Post post);
+    Optional<Hashtag> findByNameAndParentId(String hashtagName, Long parentId);
 
     @Modifying(clearAutomatically=true, flushAutomatically=true) //bulk update 후 영속성 컨텍스트 비움
     @Query("DELETE FROM HashtagPost hp WHERE hp.post in :posts")

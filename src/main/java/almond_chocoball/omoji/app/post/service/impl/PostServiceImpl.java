@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -48,7 +49,13 @@ public class PostServiceImpl implements PostService {
         checkImgsLen(imgFileList); //이미지 개수 확인
         checkContentType(imgFileList); //파일 타입 확인
 
-        List<HashtagPost> hashtagPosts = hashtagService.getHashtagPosts(postRequestDto.getEvents());
+        List<HashtagPost> hashtagPosts = new ArrayList<>();
+
+        List<HashtagPost> eventStyles = hashtagService.getEventStyleHashtagPosts(postRequestDto);
+        HashtagPost location = hashtagService.getLocationHashtagPost(postRequestDto.getLocation());
+
+        hashtagPosts.addAll(eventStyles);
+        hashtagPosts.add(location);
 
         Post post = postRequestDto.toPost(member, hashtagPosts);
 

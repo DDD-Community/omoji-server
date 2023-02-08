@@ -11,7 +11,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Hashtag {
@@ -24,7 +23,7 @@ public class Hashtag {
     private String name;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) //자식 Entity 저장 시 persist됨
     @JoinColumn(name = "parent_id")
     @JsonIgnore
     private Hashtag parent; //주인
@@ -35,15 +34,24 @@ public class Hashtag {
     private List<Hashtag> child = new ArrayList<>(); //종속
 
     //==연관관계 메서드==양방향일 때//
-    public void addChildHashtag(Hashtag child) {
-        this.child.add(child);
-        child.setParent(this);
+    public void addChildrenHashtag(Hashtag... child) {
+        Arrays.stream(child).forEach(c ->
+            {
+                this.child.add(c);
+                c.setParent(this);
+            });
     }
-
-    public static Hashtag createHashtag(String name, Hashtag... child){
+    public static Hashtag createHashtag(String name){
         Hashtag hashtag = new Hashtag();
         hashtag.setName(name);
-        Arrays.stream(child).forEach(c -> hashtag.addChildHashtag(c));
+        return hashtag;
+    }
+
+
+    public static Hashtag createHashtagWithParent(String name, Hashtag parent){
+        Hashtag hashtag = new Hashtag();
+        hashtag.setName(name);
+        hashtag.setParent(parent);
         return hashtag;
     }
 

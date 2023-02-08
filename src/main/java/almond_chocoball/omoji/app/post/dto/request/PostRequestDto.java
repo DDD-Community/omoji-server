@@ -29,6 +29,10 @@ public class PostRequestDto {
 
     private List<String> events = new ArrayList<>(); //상황
 
+    private List<String> styles = new ArrayList<>(); //스타일
+
+    private String location; //장소
+
     public Post toPost(Member member, List<HashtagPost> hashtagPosts) { //Dto->Entity
         Post post = CustomObjectMapper.to(this, Post.class);
         post.createPost(member, hashtagPosts);

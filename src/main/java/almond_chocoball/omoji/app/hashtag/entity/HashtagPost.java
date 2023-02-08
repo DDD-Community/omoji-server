@@ -38,7 +38,7 @@ public class HashtagPost {
      * HashtagPost 생성자 호출 -> Hashtag 세팅
      *
      */
-    public static List<HashtagPost> createHashtagPost(List<Hashtag> hashtags) {
+    public static List<HashtagPost> createHashtagPosts(List<Hashtag> hashtags) {
 
         List<HashtagPost> hashtagPosts = new ArrayList<>();
 
@@ -49,6 +49,12 @@ public class HashtagPost {
         }
 
         return hashtagPosts;
+    }
+
+    public static HashtagPost createHashtagPost(Hashtag hashtag) {
+        HashtagPost hashtagPost = new HashtagPost();
+        hashtagPost.setHashtag(hashtag);
+        return hashtagPost;
     }
 
 }
