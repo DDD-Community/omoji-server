@@ -15,6 +15,7 @@ import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.PostRepository;
 import almond_chocoball.omoji.app.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,6 +29,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -54,13 +56,12 @@ public class PostServiceImpl implements PostService {
         List<HashtagPost> eventStyles = hashtagService.getEventStyleHashtagPosts(postRequestDto);
         hashtagPosts.addAll(eventStyles);
 
-//        if (!postRequestDto.getLocation().equals("")
-//                || !postRequestDto.getLocation().isEmpty()
-//                || !postRequestDto.getLocation().isBlank()
-//        ) {
-//            HashtagPost location = hashtagService.getLocationHashtagPost(postRequestDto.getLocation());
-//            hashtagPosts.add(location);
-//        }
+        if (postRequestDto.getLocation() != null
+                && !postRequestDto.getLocation().isBlank()
+        ) {
+            HashtagPost location = hashtagService.getLocationHashtagPost(postRequestDto.getLocation());
+            hashtagPosts.add(location);
+        }
 
         Post post = postRequestDto.toPost(member, hashtagPosts);
 
