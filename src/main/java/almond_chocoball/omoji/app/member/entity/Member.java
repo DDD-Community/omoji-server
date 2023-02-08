@@ -11,11 +11,9 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 
 @Entity
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter @Setter @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Where(clause = "is_deleted = false") //탈퇴하지 않은 member랑만 join 가능

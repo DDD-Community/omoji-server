@@ -104,8 +104,6 @@ public class AuthService {
             throw new JwtException("JWT Expired");
         }
 
-        memberService.findMember(oldAccessToken); //존재하는 유저인지 확인
-
         //2. 유저 정보 얻기
 //        if (!tokenProvider.checkBlackList(oldAccessToken)) { //탈퇴/로그아웃한 유저
 //            throw new JwtException("Must SignUp or SignIn to Refresh AccessToken");
@@ -115,6 +113,7 @@ public class AuthService {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         String socialId = userDetails.getSocialId();
+        memberService.findMember(socialId); //존재하는 유저인지 확인
 
         //3. Refresh Token DB와 Match
         String savedToken = memberRepository.getRefreshTokenBySocialId(socialId);
@@ -146,10 +145,6 @@ public class AuthService {
         final String accessToken = tokenProvider.resolveToken(request);
         final String socialId = tokenProvider.getSocialId(accessToken);
         Member member = memberService.findMember(socialId);
-//        Long expiration = tokenProvider.getExpiration(accessToken);
-//        redisTemplate.opsForValue() //JWT Expiration될 때까지 Redis에 저장 -> accessToken만료
-//                .set(accessToken, "logout", expiration, TimeUnit.MILLISECONDS);
-        memberRepository.updateRefreshToken(socialId, null); //refreshToken 비움
         postService.removeMyAllPosts(member);
         resignRepository.save(Resign.builder().reason(reason).member(member).build());
         memberRepository.delete(member);

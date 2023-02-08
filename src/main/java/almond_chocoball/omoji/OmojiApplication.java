@@ -9,9 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 
-@SpringBootApplication
 @EnableJpaAuditing
 @EnableWebSecurity
+@SpringBootApplication
 public class OmojiApplication {
 
 	@PostConstruct

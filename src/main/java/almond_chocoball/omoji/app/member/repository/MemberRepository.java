@@ -11,8 +11,6 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    Member getById(Long id);
-
     Optional<Member> findBysocialId(String socialId);
 
     @Query("SELECT m.refreshToken FROM Member m WHERE m.socialId=:socialId")

@@ -3,8 +3,8 @@ package almond_chocoball.omoji.app.auth.dto;
 import lombok.*;
 
 @ToString
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
 public class Token {
 

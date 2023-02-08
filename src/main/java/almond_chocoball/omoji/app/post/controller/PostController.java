@@ -7,7 +7,7 @@ import almond_chocoball.omoji.app.member.service.MemberService;
 import almond_chocoball.omoji.app.post.dto.request.PostPagingRequestDto;
 import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
 import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
-import almond_chocoball.omoji.app.post.dto.response.MyPostPagingResponseDto;
+import almond_chocoball.omoji.app.post.dto.response.PostPagingResponseDto;
 import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
 import almond_chocoball.omoji.app.post.service.PostService;
 import io.swagger.annotations.ApiParam;
@@ -59,7 +59,7 @@ public class PostController {
     @Tag(name = "Post")
     @GetMapping()
     @Operation(summary = "start부터 limit까지 특정 user의 post 조회", description = "start부터 limit까지 특정 user의 post 조회 API")
-    public ResponseEntity<PostsResponseDto<List<MyPostPagingResponseDto>>> getMemberPostsWithPaging(PostPagingRequestDto pagingRequestDto) {
+    public ResponseEntity<PostsResponseDto<List<PostPagingResponseDto>>> getMemberPostsWithPaging(PostPagingRequestDto pagingRequestDto) {
         return ApiResponse.success(postService.getMemberPostsWithPaging(
                 memberService.findMember(pagingRequestDto.getUserId()),
                 pagingRequestDto.getStart(), pagingRequestDto.getLimit()));
@@ -68,7 +68,7 @@ public class PostController {
     @Tag(name = "Post")
     @GetMapping("/all")
     @Operation(summary = "특정 user의 post 전체 조회", description = "특정 user의 post 조회 API")
-    public ResponseEntity<PostsResponseDto<List<MyPostPagingResponseDto>>> getMemberPosts(@Param("userId") Long userId) {
+    public ResponseEntity<PostsResponseDto<List<PostPagingResponseDto>>> getMemberPosts(@Param("userId") Long userId) {
         return ApiResponse.success(postService.getMemberPosts(memberService.findMember(userId)));
     }
 

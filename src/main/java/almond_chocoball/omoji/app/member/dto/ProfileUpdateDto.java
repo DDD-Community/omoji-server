@@ -1,5 +1,6 @@
 package almond_chocoball.omoji.app.member.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProfileUpdateDto {
 
     @NotBlank

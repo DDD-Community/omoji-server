@@ -9,7 +9,7 @@ import almond_chocoball.omoji.app.img.service.ImgService;
 import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.post.dto.request.PostRequestDto;
 import almond_chocoball.omoji.app.post.dto.response.DetailPostResponseDto;
-import almond_chocoball.omoji.app.post.dto.response.MyPostPagingResponseDto;
+import almond_chocoball.omoji.app.post.dto.response.PostPagingResponseDto;
 import almond_chocoball.omoji.app.post.dto.response.PostsResponseDto;
 import almond_chocoball.omoji.app.post.entity.Post;
 import almond_chocoball.omoji.app.post.repository.PostRepository;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
@@ -42,26 +42,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getPostById(Long id){
-        return postRepository.findById(id).orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
+        return postRepository.findById(id)
+                .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
     }
 
     @Override
+    @Transactional
     public SimpleSuccessResponse uploadPost(Member member, PostRequestDto postRequestDto,
                                             List<MultipartFile> imgFileList) {
         checkImgsLen(imgFileList); //이미지 개수 확인
         checkContentType(imgFileList); //파일 타입 확인
 
-        List<HashtagPost> hashtagPosts = new ArrayList<>();
-
-        List<HashtagPost> eventStyles = hashtagService.getEventStyleHashtagPosts(postRequestDto);
-        hashtagPosts.addAll(eventStyles);
-
-        if (postRequestDto.getLocation() != null
-                && !postRequestDto.getLocation().isBlank()
-        ) {
-            HashtagPost location = hashtagService.getLocationHashtagPost(postRequestDto.getLocation());
-            hashtagPosts.add(location);
-        }
+        List<HashtagPost> hashtagPosts = getHashtagPosts(postRequestDto);
 
         Post post = postRequestDto.toPost(member, hashtagPosts);
 
@@ -75,56 +67,40 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public DetailPostResponseDto getPost(Member member, Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
+        Post post = getPostById(id);
 
-        DetailPostResponseDto detailPostResponseDto = DetailPostResponseDto.of(post);
-        detailPostResponseDto.setLikeCount(evaluateService.countRowByPost(post, EvaluateEnum.LIKE));
-        detailPostResponseDto.setDislikeCount(evaluateService.countRowByPost(post, EvaluateEnum.DISLIKE));
-        List<String> imgUrls = imgService.getImgUrls(post);
+        DetailPostResponseDto detailPostResponseDto = getDetailPostResponseDto(post);
 
         if (post.getMember().getId() == member.getId()) {
             detailPostResponseDto.setIsOwner(true);
         }
-        detailPostResponseDto.setImgs(imgUrls);
 
         return detailPostResponseDto;
     }
 
+
     @Override
-    @Transactional(readOnly = true)
-    public PostsResponseDto<List<MyPostPagingResponseDto>> getMemberPostsWithPaging(Member member,
-                                                                                int page, int size) {
+    public PostsResponseDto<List<PostPagingResponseDto>> getMemberPostsWithPaging(Member member,
+                                                                                  int page, int size) {
         Sort sort = sortByCreatedAt();
         Page<Post> allPosts = postRepository.findAllByMember(member, PageRequest.of(page, size, sort));
-        List<MyPostPagingResponseDto> myPostPagingResponseDtoList = allPosts.getContent().stream().map(post -> {
-            MyPostPagingResponseDto myPostPagingResponseDto = MyPostPagingResponseDto.of(post);
-            myPostPagingResponseDto.setLikeCount(evaluateService.countRowByPost(post, EvaluateEnum.LIKE));
-            myPostPagingResponseDto.setDislikeCount(evaluateService.countRowByPost(post, EvaluateEnum.DISLIKE));
-            myPostPagingResponseDto.setImgs(imgService.getImgUrls(post));
-            return myPostPagingResponseDto;
-        }).collect(Collectors.toList());
-        return new PostsResponseDto(myPostPagingResponseDtoList);
+        List<PostPagingResponseDto> postPagingResponseDtoList = allPosts.getContent().stream()
+                .map(post -> getPostResponseDto(post)).collect(Collectors.toList());
+        return new PostsResponseDto(postPagingResponseDtoList);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public PostsResponseDto<List<MyPostPagingResponseDto>> getMemberPosts(Member member) {
+    public PostsResponseDto<List<PostPagingResponseDto>> getMemberPosts(Member member) {
         Sort sort = sortByCreatedAt();
         List<Post> allPosts = postRepository.findAllByMember(member, sort);
-        List<MyPostPagingResponseDto> myPostPagingResponseDtoList = allPosts.stream().map(post -> {
-            MyPostPagingResponseDto myPostPagingResponseDto = MyPostPagingResponseDto.of(post);
-            myPostPagingResponseDto.setLikeCount(evaluateService.countRowByPost(post, EvaluateEnum.LIKE));
-            myPostPagingResponseDto.setDislikeCount(evaluateService.countRowByPost(post, EvaluateEnum.DISLIKE));
-            myPostPagingResponseDto.setImgs(imgService.getImgUrls(post));
-            return myPostPagingResponseDto;
-        }).collect(Collectors.toList());
-        return new PostsResponseDto(myPostPagingResponseDtoList);
+        List<PostPagingResponseDto> postPagingResponseDtoList = allPosts.stream()
+                .map(post -> getPostResponseDto(post)).collect(Collectors.toList());
+        return new PostsResponseDto(postPagingResponseDtoList);
     }
 
     @Override
+    @Transactional
     public SimpleSuccessResponse removeMyPost(Member member, Long id) {
         Post post = postRepository.findByIdAndMember(id, member)
                 .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다."); });
@@ -134,6 +110,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void removeMyAllPosts(Member member) { //회원 탈퇴 시 모든 글 삭제
         List<Post> posts = postRepository.findAllByMember(member);
         imgService.deleteImgsByPosts(posts);
@@ -142,6 +119,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public SimpleSuccessResponse updatePost(Member member, PostRequestDto postRequestDto,
                                             List<MultipartFile> imgFileList) {
         checkImgsLen(imgFileList);
@@ -150,7 +128,7 @@ public class PostServiceImpl implements PostService {
         Post findPost = postRepository.findByIdAndMember(postRequestDto.getId(), member)
                 .orElseThrow(() -> { throw new NoSuchElementException("해당 포스트를 찾을 수 없습니다.");});
 
-        List<HashtagPost> hashtagPosts = hashtagService.getHashtagPosts(postRequestDto.getEvents());
+        List<HashtagPost> hashtagPosts = getHashtagPosts(postRequestDto);
 
         Post requestPost = postRequestDto.toPost(member, hashtagPosts);
         findPost.updatePost(requestPost); //변경 감지
@@ -158,6 +136,37 @@ public class PostServiceImpl implements PostService {
         imgService.updateImg(findPost, imgFileList);
 
         return new SimpleSuccessResponse(findPost.getId());
+    }
+
+    private List<HashtagPost> getHashtagPosts(PostRequestDto postRequestDto) {
+        List<HashtagPost> hashtagPosts = new ArrayList<>();
+
+        List<HashtagPost> eventStyles = hashtagService.getEventStyleHashtagPosts(postRequestDto);
+        hashtagPosts.addAll(eventStyles);
+
+        if (postRequestDto.getLocation() != null && !postRequestDto.getLocation().isBlank()) {
+            HashtagPost location = hashtagService.getLocationHashtagPost(postRequestDto.getLocation());
+            hashtagPosts.add(location);
+        }
+        return hashtagPosts;
+    }
+
+    private DetailPostResponseDto getDetailPostResponseDto(Post post) {
+        DetailPostResponseDto detailPostResponseDto = DetailPostResponseDto.of(post);
+        detailPostResponseDto.setLikeCount(evaluateService.countRowByPost(post, EvaluateEnum.LIKE));
+        detailPostResponseDto.setDislikeCount(evaluateService.countRowByPost(post, EvaluateEnum.DISLIKE));
+
+        List<String> imgUrls = imgService.getImgUrls(post);
+        detailPostResponseDto.setImgs(imgUrls);
+        return detailPostResponseDto;
+    }
+
+    private PostPagingResponseDto getPostResponseDto(Post post) {
+        PostPagingResponseDto postPagingResponseDto = PostPagingResponseDto.of(post);
+        postPagingResponseDto.setLikeCount(evaluateService.countRowByPost(post, EvaluateEnum.LIKE));
+        postPagingResponseDto.setDislikeCount(evaluateService.countRowByPost(post, EvaluateEnum.DISLIKE));
+        postPagingResponseDto.setImgs(imgService.getImgUrls(post));
+        return postPagingResponseDto;
     }
 
 
