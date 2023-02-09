@@ -73,6 +73,13 @@ public class PostController {
     }
 
     @Tag(name = "Post")
+    @GetMapping("/my")
+    @Operation(summary = "내 post 전체 조회", description = "특정 user의 post 조회 API")
+    public ResponseEntity<PostsResponseDto<List<PostPagingResponseDto>>> getMyPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ApiResponse.success(postService.getMemberPosts(memberService.findMember(userDetails)));
+    }
+
+    @Tag(name = "Post")
     @DeleteMapping("/{id}")
     @Operation(summary = "글 삭제", description = "내가 쓴 글 삭제")
     public ResponseEntity<SimpleSuccessResponse> deletePost(@AuthenticationPrincipal CustomUserDetails userDetails,
