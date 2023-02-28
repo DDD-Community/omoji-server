@@ -1,6 +1,5 @@
 package almond_chocoball.omoji.app.auth.dto;
 
-import almond_chocoball.omoji.app.auth.enums.Gender;
 import almond_chocoball.omoji.app.auth.enums.Role;
 import almond_chocoball.omoji.app.auth.enums.Social;
 import almond_chocoball.omoji.app.member.entity.Member;
@@ -14,13 +13,12 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OAuthAttributes { //provider마다 제공해주는 정보 형태가 다르기 때문에 분기 정리 클래스
-    private Map<String, Object> attributes;
     private String socialId;
     private String email;
     private String nickname;
     private Social social;
-    private Gender gender;
-    private Short birthyear;
+//    private Gender gender;
+//    private Short birthyear;
 
 
     public static OAuthAttributes of(Social provider, Map<String,Object> attributes){
@@ -28,6 +26,8 @@ public class OAuthAttributes { //provider마다 제공해주는 정보 형태가
         switch (provider) {
             case naver:
                 return ofNaver(attributes);
+            case apple:
+                return ofApple(attributes);
             default:
                 throw new RuntimeException("OAuthAttributes 생성에 실패했습니다.");
         }
@@ -40,10 +40,18 @@ public class OAuthAttributes { //provider마다 제공해주는 정보 형태가
                 .email((String) response.get("email"))
                 .nickname((String) response.get("nickname"))
                 .social(Social.naver)
-                .gender(Gender.valueOf((String) response.get("gender")))
-                .birthyear(Short.valueOf((String) response.get("birthyear")))
-                .attributes(response)
+//                .gender(Gender.valueOf((String) response.get("gender")))
+//                .birthyear(Short.valueOf((String) response.get("birthyear")))
                 .socialId((String) response.get("id"))
+                .build();
+    }
+
+    private static OAuthAttributes ofApple(Map<String, Object> attributes) {
+        return OAuthAttributes.builder()
+                .email((String) attributes.get("email"))
+                .nickname(null)
+                .social(Social.apple)
+                .socialId((String) attributes.get("sub"))
                 .build();
     }
 
@@ -53,8 +61,8 @@ public class OAuthAttributes { //provider마다 제공해주는 정보 형태가
                 .social(social)
                 .nickname(null)
                 .email(email)
-                .gender(gender)
-                .birthyear(birthyear)
+//                .gender(gender)
+//                .birthyear(birthyear)
                 .role(role)
                 .build();
     }
