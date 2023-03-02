@@ -10,6 +10,7 @@ import almond_chocoball.omoji.app.auth.dto.request.RefreshRequest;
 import almond_chocoball.omoji.app.auth.dto.response.OAuthResponse;
 import almond_chocoball.omoji.app.auth.enums.Role;
 import almond_chocoball.omoji.app.auth.enums.Social;
+import almond_chocoball.omoji.app.auth.utils.AppleUtils;
 import almond_chocoball.omoji.app.common.dto.SimpleSuccessResponse;
 import almond_chocoball.omoji.app.member.entity.Member;
 import almond_chocoball.omoji.app.member.entity.Resign;
@@ -42,6 +43,7 @@ public class AuthService {
     private final JwtTokenProvider tokenProvider;
     private final JwtValidation jwtValidation;
     private final NaverClient naverClient;
+    private final AppleUtils appleUtils;
 
     public OAuthResponse login(Social provider, String socialToken) {
         OAuthAttributes oAuthAttributes = getUserProfile(provider, socialToken);
@@ -64,6 +66,8 @@ public class AuthService {
         switch (provider) {
             case naver:
                 return naverClient.getOAuthAttributes(socialToken);
+            case apple:
+                return appleUtils.getOAuthAttributes(socialToken);
             default:
                 throw new RuntimeException("getOAuthProfile 실패");
         }

@@ -42,6 +42,14 @@ public class AuthController {
     }
 
     @Tag(name = "OAuth")
+    @Operation(summary = "애플 로그인", description = "Header에 socialToken(애플 id_token) 첨부-> 유저 정보 받고 앱의 토큰 반환")
+    @PostMapping(value = "/apple")
+    public ResponseEntity<OAuthResponse> appleLogin(HttpServletRequest request) {
+        final String socialToken = loginHeader(request);
+        return ApiResponse.success(authService.login(Social.apple, socialToken));
+    }
+
+    @Tag(name = "OAuth")
     @Operation(summary = "accessToken 갱신", description = "Header에 Access, Refresh 첨부")
     @PostMapping("/refresh")
     public ResponseEntity<Token> refreshToken(HttpServletRequest request) {
