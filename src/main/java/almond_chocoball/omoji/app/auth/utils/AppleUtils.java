@@ -52,11 +52,13 @@ public class AppleUtils {
         // EXP
         Date currentTime = new Date(System.currentTimeMillis());
         if (!currentTime.before(payload.getExpirationTime())) {
+            log.info("expired apple JWT");
             return false;
         }
 
         // NONCE(Test value) !"20B20D-0S8-1K8".equals(payload.getClaim("nonce")) || , ISS, AUD
         if (!ISS.equals(payload.getIssuer()) || !AUD.equals(payload.getAudience().get(0))) {
+            log.info("apple JWT ISS, AUD not matched");
             return false;
         }
 
@@ -64,7 +66,7 @@ public class AppleUtils {
         if (verifyPublicKey(signedJWT)) {
             return true;
         }
-
+        log.info("apple JWT public key not matched");
         return false;
     }
 
